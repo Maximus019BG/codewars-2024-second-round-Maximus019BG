@@ -19,7 +19,7 @@ public class MainService {
     public String generateShortUrl(String longUrl) {
         String uuid = java.util.UUID.randomUUID().toString();
         uuid = uuid.replaceAll("-", "");
-        String shortUrl = longUrl.substring(0, 2) + uuid.substring(0, 2);
+        String shortUrl = longUrl.substring(8, 11) + uuid.substring(0, 3);
         
         // Check if short url already exists
         if (shortUrlExists(shortUrl)) {
@@ -28,9 +28,24 @@ public class MainService {
         return shortUrl;
     }
     
-    public void createUrl(String longUrl, String shortUrl, String expirationDate) {
+    //Access long URL from short URL (get the long url)
+    public String accessUrl(String shortUrl) {
+        Url url = mainRepo.findByShortUrl(shortUrl).orElse(null);
+        
+        if (url != null) {
+            url.setClicks(url.getClicks() + 1);
+            incrementClicks(shortUrl);
+            mainRepo.save(url);
+        } else {
+            throw new RuntimeException("URL not found");
+        }
+        return url.getLongUrl();
+    }
+    
+    //Create URL entity
+    public String createUrl(String longUrl, String shortUrl, String expirationDate) {
         Url url = new Url();
-        url.setUrl(longUrl);
+        url.setLongUrl(longUrl);
         
         if (shortUrl == null) {
             url.setShortUrl(generateShortUrl(longUrl));
@@ -38,12 +53,28 @@ public class MainService {
             url.setShortUrl(shortUrl);
         }
         url.setExpirationDate(expirationDate);
-        
         mainRepo.save(url);
+        return url.getShortUrl();
     }
     
+    //Helpers
     //Helper method to check if short url already exists
-    public boolean shortUrlExists(String shortUrl) {
+    private boolean shortUrlExists(String shortUrl) {
         return mainRepo.findByShortUrl(shortUrl).isPresent() && mainRepo.findByShortUrl(shortUrl).get().getShortUrl().equals(shortUrl);
+    }
+    
+    //Helper method to check if URL is expired
+    private boolean isExpired(Url url) {
+        return url.isExpired();
+    }
+    
+    //Helper method to increment clicks on URL (takes short URL)
+    private void incrementClicks(String shortUrl) {
+        Url url = mainRepo.findByShortUrl(shortUrl).orElse(null);
+        if(url == null) {
+            throw new RuntimeException("URL not found");
+        }
+        url.setClicks(url.getClicks() + 1);
+        mainRepo.save(url);
     }
 }

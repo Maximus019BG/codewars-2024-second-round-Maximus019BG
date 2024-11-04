@@ -28,26 +28,24 @@ public class MainController {
     @PostMapping("/create")
     public ResponseEntity<String> createShortUrl(@RequestBody Map<Object, String> url) {
         String longUrl = url.get("url");
-        String shortUrl = url.get("customShortUrl").describeConstable().orElse(null);
-        String expirationDate = url.get("expirationDate").describeConstable().orElse(null);
+        String shortUrl = url.get("customShortUrl") != null ? url.get("customShortUrl").describeConstable().orElse(null) : null;
+        String expirationDate = url.get("expirationDate") != null ? url.get("expirationDate").describeConstable().orElse(null) : null;
         
-        //Create the URl object
-        mainService.createUrl(longUrl, shortUrl, expirationDate);
+        // Create the URL object
+        String finalUrl = mainService.createUrl(longUrl, shortUrl, expirationDate);
         
-        //Return 200
-        return ResponseEntity.ok().body("URL created successfully");
+        // Return 200
+        return ResponseEntity.ok().body(finalUrl);
     }
     
     //Get long URL
     @GetMapping("/get/{shortUrl}")
     public ResponseEntity<String> getLongUrl(@PathVariable String shortUrl) {
         Url url = mainRepo.findByShortUrl(shortUrl).orElse(null);
-        //Check if URL entity exists
-        if(url == null) {
-            return ResponseEntity.badRequest().body("Short URL not found");
-        }
+        
+        String longUrl = mainService.accessUrl(shortUrl);
         
         //Return 200
-        return ResponseEntity.ok().body(url.getUrl());
+        return ResponseEntity.ok().body(longUrl);
     }
 }

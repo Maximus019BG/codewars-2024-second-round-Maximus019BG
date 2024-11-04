@@ -10,11 +10,12 @@ import static com.codewars2.Utils.Utils.generateId;
 @Table(name = "urls")
 public class Url {
     
+    //Fields
     @Id
     private String id;
     
     @Column(nullable = false)
-    private String url;
+    private String longUrl;
     
     @Column(unique = true)
     private String shortUrl;
@@ -31,6 +32,7 @@ public class Url {
     @Column(nullable = false)
     private boolean isExpired;
     
+    //PrePersist method (called before the entity is persisted)
     @PrePersist
     public void prePersist() {
      setId(generateId());
@@ -39,6 +41,7 @@ public class Url {
      setExpired(false);
     }
     
+    //Getters and Setters
     public String getId() {
         return id;
     }
@@ -47,12 +50,12 @@ public class Url {
         this.id = id;
     }
     
-    public String getUrl() {
-        return url;
+    public String getLongUrl() {
+        return longUrl;
     }
     
-    public void setUrl(String url) {
-        this.url = url;
+    public void setLongUrl(String url) {
+        this.longUrl = url;
     }
     
     public String getShortUrl() {
@@ -94,4 +97,5 @@ public class Url {
     public void setExpired(boolean expired) {
         isExpired = expired;
     }
+    
 }
