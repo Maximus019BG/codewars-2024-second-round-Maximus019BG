@@ -17,6 +17,7 @@
 #IDE
 */.idea
 */.vscode
+.idea
 
 
 # testing
