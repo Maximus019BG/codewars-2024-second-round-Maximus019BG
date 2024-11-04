@@ -1,1 +1,17 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/fULRwKMW)
+# 🚀 ZipURL
+
+ZipURL is a fast, scalable URL shortener built with Java Spring Boot for the backend and Next.js for the frontend. With ZipURL, you can generate short links, track clicks, and manage URLs easily.
+
+## 📜 Features
+
+- **Instant URL Shortening**: Shorten long URLs into manageable links.
+- **Custom Aliases**: Create custom short links.
+- **Analytics Dashboard**: Track clicks and metrics.
+- **Expiration Dates**: Add expiration dates for temporary links.
+
+## 🛠️ Tech Stack
+
+- **Frontend**: ![Next.js Logo](https://img.icons8.com/color/48/000000/nextjs.png)  ![Tailwind CSS Logo](https://img.icons8.com/color/48/000000/tailwindcss.png) 
+- **Backend**: ![Java Logo](https://img.icons8.com/color/48/000000/java-coffee-cup-logo.png)
+- **Database**: ![MySQL Logo](https://img.icons8.com/color/48/000000/mysql-logo.png)
+- **Others**: ![Docker Logo](https://img.icons8.com/color/48/000000/docker.png) ![Nginx Logo](https://img.icons8.com/color/48/000000/nginx.png)
