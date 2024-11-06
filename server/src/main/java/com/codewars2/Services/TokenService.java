@@ -47,18 +47,18 @@ public class TokenService {
         try {
             Token tokenObj = new Token();
             //setToken() is lower in code
-            tokenObj.setTokenType(tokenType);
-            tokenObj.setSubject(user);
-            tokenObj.setIssuedAt(new Date(System.currentTimeMillis()));
-            Algorithm algorithm = Algorithm.HMAC512(secret);
+            tokenObj.setTokenType(tokenType); //Token type
+            tokenObj.setSubject(user); //User
+            tokenObj.setIssuedAt(new Date(System.currentTimeMillis())); //Current time
+            Algorithm algorithm = Algorithm.HMAC512(secret); //Secret for JWT
             
             token = JWT.create()
                     .withIssuer(issuer)
-                    .withJWTId(token_type.toLowerCase() + "_" + UUID.randomUUID().toString().replace("-", ""))
-                    .withSubject(tokenObj.getSubject().getId())
-                    .withIssuedAt(tokenObj.getIssuedAt())
-                    .withExpiresAt(new Date(System.currentTimeMillis() + time))
-                    .sign(algorithm);
+                    .withJWTId(token_type.toLowerCase() + "_" + UUID.randomUUID().toString().replace("-", "")) //Unique token id
+                    .withSubject(tokenObj.getSubject().getId()) //User id
+                    .withIssuedAt(tokenObj.getIssuedAt()) //Current time
+                    .withExpiresAt(new Date(System.currentTimeMillis() + time)) //Expiration time (Current time + 5 min or 5 days depending on token type)
+                    .sign(algorithm); //Sign token
             
             tokenObj.setToken(token);
             tokenRepo.save(tokenObj);
@@ -71,8 +71,8 @@ public class TokenService {
     //Session check for user
     public String sessionCheck(String refreshToken, String accessToken) {
         //Check if tokens exist
-        Token tokenObjA = tokenRepo.findByToken(accessToken);
-        Token tokenObjR = tokenRepo.findByToken(refreshToken);
+        Token tokenObjA = tokenRepo.findByToken(accessToken); //Access token
+        Token tokenObjR = tokenRepo.findByToken(refreshToken); //Refresh token
         //Validate tokens
         if (tokenObjA != null && tokenObjR != null) {
             User user = tokenObjA.getSubject();

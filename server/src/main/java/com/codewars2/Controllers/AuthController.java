@@ -1,5 +1,6 @@
 package com.codewars2.Controllers;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.codewars2.Services.AuthService;
