@@ -43,13 +43,19 @@ public class MainService {
     }
     
     //Create URL entity
-    public String createUrl(String longUrl, String shortUrl, String expirationDate) {
+    public String createUrl(String longUrl, String shortUrl, String expirationDate, String password) {
         Url url = new Url();
         url.setLongUrl(longUrl);
         
         if (shortUrl == null) {
+            if(password != null) {
+               url.setPassword(password);
+            }
             url.setShortUrl(generateShortUrl(longUrl));
         } else {
+            if(password != null) {
+                url.setPassword(password);
+            }
             url.setShortUrl(shortUrl);
         }
         url.setExpirationDate(expirationDate);

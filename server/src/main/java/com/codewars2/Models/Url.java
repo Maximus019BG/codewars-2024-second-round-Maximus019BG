@@ -1,6 +1,7 @@
 package com.codewars2.Models;
 
 import jakarta.persistence.*;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.time.LocalDate;
 
@@ -32,13 +33,16 @@ public class Url {
     @Column(nullable = false)
     private boolean isExpired;
     
+    @Column
+    private String password;
+    
     //PrePersist method (called before the entity is persisted)
     @PrePersist
     public void prePersist() {
-     setId(generateId());
-     setClicks(0);
-     setDate(java.time.LocalDate.now());
-     setExpired(false);
+        setId(generateId());
+        setClicks(0);
+        setDate(java.time.LocalDate.now());
+        setExpired(false);
     }
     
     //Getters and Setters
@@ -97,5 +101,15 @@ public class Url {
     public void setExpired(boolean expired) {
         isExpired = expired;
     }
+    
+    public String getPassword() {
+        return password;
+    }
+    
+    public void setPassword(String password) {
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        this.password = encoder.encode(password);
+    }
+    
     
 }

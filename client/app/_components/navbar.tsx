@@ -3,7 +3,7 @@ import React, {useEffect} from 'react';
 import {SessionCheck} from "@/app/funcs/funcs";
 import Cookies from "js-cookie";
 
-const SideBar = () => {
+const NavBar = () => {
 
     //Session check
     useEffect(() => {
@@ -14,16 +14,17 @@ const SideBar = () => {
             window.location.href = '/log-in'; //Redirect to login page if no session
         }
     }, []);
+
     return (
-        <div className="w-64 h-full bg-gray-800">
-            <div className="flex items-center justify-center h-16 border-b border-gray-700">
+        <div className="fixed top-0 left-0 w-full h-16 bg-gray-800 flex items-center justify-between px-4">
+            <div className="flex items-center">
                 <h1 className="text-white">ZipURL</h1>
             </div>
-            <div className="flex flex-col items-center justify-center h-full">
-                <a href="/links" className="text-white hover:bg-gray-700 hover:text-gray-200 w-full py-2 text-center">Links</a>
-                <a href="/settings" className="text-white hover:bg-gray-700 hover:text-gray-200 w-full py-2 text-center">Settings</a>
+            <div className="flex items-center">
+                <a href="/links" className="text-white hover:bg-gray-700 hover:text-gray-200 rounded-lg px-4 py-2">Links</a>
+                <a href="/settings" className="text-white hover:bg-gray-700 hover:text-gray-200 rounded-lg px-4 py-2">Settings</a>
             </div>
         </div>
     );
 }
-export default SideBar;
+export default NavBar;

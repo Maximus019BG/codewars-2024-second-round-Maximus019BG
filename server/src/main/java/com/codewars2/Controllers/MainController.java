@@ -30,12 +30,12 @@ public class MainController {
         String longUrl = url.get("url");
         String shortUrl = url.get("customShortUrl") != null ? url.get("customShortUrl").describeConstable().orElse(null) : null;
         String expirationDate = url.get("expirationDate") != null ? url.get("expirationDate").describeConstable().orElse(null) : null;
+        String password = url.get("password") != null ? url.get("password").describeConstable().orElse(null) : null;
         
         // Create the URL object
-        String finalUrl = mainService.createUrl(longUrl, shortUrl, expirationDate);
+        String finalUrl = mainService.createUrl(longUrl, shortUrl, expirationDate, password);
         
-        // Return 200
-        return ResponseEntity.ok().body(finalUrl);
+        return ResponseEntity.ok().body(finalUrl);    // Return 200
     }
     
     //Get long URL
@@ -45,7 +45,6 @@ public class MainController {
         
         String longUrl = mainService.accessUrl(shortUrl);
         
-        //Return 200
-        return ResponseEntity.ok().body(longUrl);
+        return ResponseEntity.ok().body(longUrl);     //Return 200
     }
 }

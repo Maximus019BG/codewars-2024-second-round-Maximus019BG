@@ -1,16 +1,21 @@
-import SideBar from "@/app/_components/SideBar";
+import NavBar from "@/app/_components/navbar";
 import React from "react";
+import CreateLink from "@/app/_components/CreateLink";
 
 const LinksPage = () => {
     //Session check inside sidebar to have
     //Server component
 
     return (
-        <div className="flex">
-            <div className="relative h-full">
-                <SideBar/>
+        <div className="flex w-full h-full">
+            <div className="">
+                <NavBar/>
             </div>
-            <h1>Links</h1>
+            <div className="w-full h-full mt-14">
+                <div className="w-full flex-1">
+                    <CreateLink/>
+                </div>
+            </div>
         </div>
     );
 }
