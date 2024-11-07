@@ -1,18 +1,30 @@
 package com.codewars2.Services;
 
 import com.codewars2.Models.Url;
-import com.codewars2.Repositories.MainRepo;
+import com.codewars2.Models.User;
+import com.codewars2.Repositories.UrlRepo;
+import com.codewars2.Repositories.UserRepo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.util.List;
 
 @Service
 public class MainService {
     
     //Dependency Injection
-    private final MainRepo mainRepo;
+    private final UrlRepo urlRepo;
+    private final TokenService tokenService;
+    private final UserRepo userRepo;
+    
     
     //Constructor
-    public MainService(MainRepo mainRepo) {
-        this.mainRepo = mainRepo;
+    @Autowired
+    public MainService(UrlRepo urlRepo, TokenService tokenService, UserRepo userRepo) {
+        this.urlRepo = urlRepo;
+        this.tokenService = tokenService;
+        this.userRepo = userRepo;
     }
     
     //Generates short URL (called if there isn't short url from the user)
@@ -28,14 +40,26 @@ public class MainService {
         return shortUrl;
     }
     
+    //Fixer Method for SQL Error: 1063
+    private String generateUniqueShortUrl(String longUrl) {
+        String shortUrl;
+        do {
+            shortUrl = generateShortUrl(longUrl);
+        } while (shortUrlExists(shortUrl));
+        return shortUrl;
+    }
+    
     //Access long URL from short URL (get the long url)
     public String accessUrl(String shortUrl) {
-        Url url = mainRepo.findByShortUrl(shortUrl).orElse(null);
+        Url url = urlRepo.findByShortUrl(shortUrl).orElse(null);
         
         if (url != null) {
+            if (isExpired(url)) {
+                throw new RuntimeException("URL is expired");
+            }
             url.setClicks(url.getClicks() + 1);
             incrementClicks(shortUrl);
-            mainRepo.save(url);
+            urlRepo.save(url);
         } else {
             throw new RuntimeException("URL not found");
         }
@@ -43,44 +67,66 @@ public class MainService {
     }
     
     //Create URL entity
-    public String createUrl(String longUrl, String shortUrl, String expirationDate, String password) {
+    public String createUrl(String longUrl, String shortUrl, String expirationDate, String password, String token) {
+        User user = tokenService.getUserFromToken(token);//Get user from token
         Url url = new Url();
         url.setLongUrl(longUrl);
         
-        if (shortUrl == null) {
-            if(password != null) {
-               url.setPassword(password);
-            }
-            url.setShortUrl(generateShortUrl(longUrl));
-        } else {
-            if(password != null) {
-                url.setPassword(password);
-            }
-            url.setShortUrl(shortUrl);
+        
+        if (shortUrl == null || shortUrl.isEmpty()|| shortUrl.isBlank()|| shortUrl.equals("")) {
+            shortUrl = generateUniqueShortUrl(longUrl);
         }
-        url.setExpirationDate(expirationDate);
-        mainRepo.save(url);
+        url.setShortUrl(shortUrl);
+        
+        if (password != null && !password.isEmpty() && !password.isBlank() && !password.equals("")) {
+            url.setPassword(password);
+        }
+        
+        List<Url> urls = user.getUrls();
+        urls.add(url);
+        user.setUrls(urls);
+        
+        if (expirationDate != null && !expirationDate.isEmpty() && !expirationDate.isBlank() && !expirationDate.equals("")) {
+            url.setExpirationDate(LocalDate.parse(expirationDate));
+        }
+        
+        urlRepo.save(url);
+        userRepo.save(user);
         return url.getShortUrl();
+    }
+    
+    //Get all URLs for a user
+    public List<Url> getAllUrls(String token) {
+        User user = tokenService.getUserFromToken(token);
+        return user.getUrls();
     }
     
     //Helpers
     //Helper method to check if short url already exists
     private boolean shortUrlExists(String shortUrl) {
-        return mainRepo.findByShortUrl(shortUrl).isPresent() && mainRepo.findByShortUrl(shortUrl).get().getShortUrl().equals(shortUrl);
+        return urlRepo.findByShortUrl(shortUrl).isPresent() && urlRepo.findByShortUrl(shortUrl).get().getShortUrl().equals(shortUrl);
     }
     
     //Helper method to check if URL is expired
     private boolean isExpired(Url url) {
+        if(url.getExpirationDate() == null) {
+            return false;
+        }
+        else if (url.getExpirationDate() != null && url.getExpirationDate().isBefore(LocalDate.now().plusDays(1))) {
+            url.setExpired(true);//Set URL to expired
+            urlRepo.save(url);
+            return false;
+        }
         return url.isExpired();
     }
     
     //Helper method to increment clicks on URL (takes short URL)
     private void incrementClicks(String shortUrl) {
-        Url url = mainRepo.findByShortUrl(shortUrl).orElse(null);
-        if(url == null) {
+        Url url = urlRepo.findByShortUrl(shortUrl).orElse(null);
+        if (url == null) {
             throw new RuntimeException("URL not found");
         }
         url.setClicks(url.getClicks() + 1);
-        mainRepo.save(url);
+        urlRepo.save(url);
     }
 }

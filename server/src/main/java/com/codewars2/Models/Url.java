@@ -28,7 +28,7 @@ public class Url {
     private LocalDate date;
     
     @Column(nullable = true)
-    private String expirationDate;
+    private LocalDate expirationDate;
     
     @Column(nullable = false)
     private boolean isExpired;
@@ -86,11 +86,11 @@ public class Url {
         this.clicks = clicks;
     }
     
-    public String getExpirationDate() {
+    public LocalDate getExpirationDate() {
         return expirationDate;
     }
     
-    public void setExpirationDate(String expirationDate) {
+    public void setExpirationDate(LocalDate expirationDate) {
         this.expirationDate = expirationDate;
     }
     
