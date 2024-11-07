@@ -9,7 +9,13 @@ import { QRCodeCanvas } from "qrcode.react";
 const AllUrls = () => {
     const [urls, setUrls] = useState<UrlType[]>([]);
     const [activeIndex, setActiveIndex] = useState<number | null>(null);
-    const baseUrl = `${window.location.protocol}//${window.location.host}/`;
+    const [baseUrl, setBaseUrl] = useState<string>("");
+
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            setBaseUrl(`${window.location.protocol}//${window.location.host}/`);
+        }
+    }, []);
 
     useEffect(() => {
         axios.get(`${api}/url/get/all`, {
@@ -22,6 +28,7 @@ const AllUrls = () => {
         }).catch((error) => {
             console.error(error);
         });
+
     }, []);
 
     const toggleAccordion = (index: number) => {

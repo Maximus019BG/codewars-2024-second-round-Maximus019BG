@@ -2,6 +2,7 @@
 import React, {useEffect} from 'react';
 import {SessionCheck} from "@/app/funcs/funcs";
 import Cookies from "js-cookie";
+import Link from "next/link";
 
 const NavBar = () => {
 
@@ -11,7 +12,9 @@ const NavBar = () => {
             SessionCheck();//Check if session is valid
         }
         else{
-            window.location.href = '/log-in'; //Redirect to login page if no session
+            if (typeof window !== "undefined") {
+                window.location.href = '/log-in'; //Redirect to login page if no session
+            }
         }
     }, []);
 
@@ -21,8 +24,8 @@ const NavBar = () => {
                 <h1 className="text-white">ZipURL</h1>
             </div>
             <div className="flex items-center">
-                <a href="/links" className="text-white hover:bg-gray-700 hover:text-gray-200 rounded-lg px-4 py-2">Links</a>
-                <a href="/settings" className="text-white hover:bg-gray-700 hover:text-gray-200 rounded-lg px-4 py-2">Settings</a>
+                <Link href="/links" className="text-white hover:bg-gray-700 hover:text-gray-200 rounded-lg px-4 py-2">Links</Link>
+                <Link href="/settings" className="text-white hover:bg-gray-700 hover:text-gray-200 rounded-lg px-4 py-2">Settings</Link>
             </div>
         </div>
     );

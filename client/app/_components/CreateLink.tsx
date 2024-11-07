@@ -1,7 +1,7 @@
 "use client";
-import React, {useState} from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import {api} from "@/app/api/conf";
+import { api } from "@/app/api/conf";
 import Cookies from "js-cookie";
 
 const CreateLink = () => {
@@ -11,7 +11,13 @@ const CreateLink = () => {
     const [experation, setExperation] = useState<string | null>(""); // Experation date
     const [popup, setPopup] = useState<boolean>(false); // Popup state
     const [popupMessage, setPopupMessage] = useState<string>(""); // Popup message
-    const baseUrl = `${window.location.protocol}//${window.location.host}/`;
+    const [baseUrl, setBaseUrl] = useState<string>("");
+
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            setBaseUrl(`${window.location.protocol}//${window.location.host}/`);
+        }
+    }, []);
 
     // Create a new link
     const createLink = () => {
@@ -43,7 +49,7 @@ const CreateLink = () => {
     return (
         <div className="mx-auto p-4 w-1/2">
             <div className="input-group flex items-center mb-4">
-                <span className="prefix text-gray-500 bg-white p-2 border border-gray-300 rounded-l">http://localhost:3000/</span>
+                <span className="prefix text-gray-500 bg-white p-2 border border-gray-300 rounded-l">{baseUrl}</span>
                 <input
                     className="input w-full p-2 border-t border-r border-b border-gray-300 rounded-r text-black"
                     value={customLink || ""}
