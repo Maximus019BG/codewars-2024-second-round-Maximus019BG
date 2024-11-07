@@ -53,4 +53,16 @@ public class MainController {
     public ResponseEntity<?> getAllUrls(@RequestHeader("authorization") String user) {
         return ResponseEntity.ok().body(mainService.getAllUrls(user));    //Return 200
     }
+    
+    @PutMapping("/update")
+    public ResponseEntity<?> updateUrl(@RequestBody Map<Object, String> url, @RequestHeader("authorization") String user) {
+        String shortUrl = url.get("shortUrl");
+        String expirationDate = url.get("expirationDate");
+        String password = url.get("password");
+        String oldShortUrl = url.get("oldShortUrl");
+        
+        mainService.updateUrl(shortUrl, expirationDate, password, user, oldShortUrl);
+        
+        return ResponseEntity.ok().body("URL updated successfully");    //Return 200
+    }
 }

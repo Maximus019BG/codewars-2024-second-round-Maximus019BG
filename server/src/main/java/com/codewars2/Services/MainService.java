@@ -95,6 +95,47 @@ public class MainService {
         return url.getShortUrl();
     }
     
+    //Update URL entity
+    public void updateUrl(String shortUrl, String expirationDate, String password, String token, String oldShortUrl) {
+        //Token validation
+        if(!tokenService.validateToken(token)) {
+            throw new RuntimeException("Invalid token");
+        }
+        User user = tokenService.getUserFromToken(token);
+        Url url = urlRepo.findByShortUrl(oldShortUrl).orElse(null);
+        
+        List<Url> listOfUrls = user.getUrls();
+        
+        //Check if user has access to this URL
+        if(!listOfUrls.contains(url)) {
+            throw new RuntimeException("User does not have access to this URL");
+        }
+        
+        //Other checks
+        if (url == null) {
+            throw new RuntimeException("URL not found");
+        }
+        
+        if (password != null && !password.isEmpty() && !password.isBlank() && !password.equals("")) {
+            if(password.equals("<null>")) {
+                url.setPassword(null);
+            }
+            else {
+                url.setPassword(password);
+            }
+        }
+       
+        if (expirationDate != null && !expirationDate.isEmpty() && !expirationDate.isBlank() && !expirationDate.equals("")) {
+            url.setExpirationDate(LocalDate.parse(expirationDate));
+        }
+        
+        if(shortUrl != null && !shortUrl.isEmpty() && !shortUrl.isBlank() && !shortUrl.equals("")) {
+            url.setShortUrl(shortUrl);
+        }
+        
+        urlRepo.save(url);  //Save the URL
+    }
+    
     //Get all URLs for a user
     public List<Url> getAllUrls(String token) {
         User user = tokenService.getUserFromToken(token);

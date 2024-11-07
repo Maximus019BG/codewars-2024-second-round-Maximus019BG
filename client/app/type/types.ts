@@ -11,3 +11,15 @@ export interface UrlType{
     expirationDate:string;
     expired:boolean;
 }
+//URL type for editing
+export interface UrlTypeEdit{
+    id:string;
+    longUrl:string;
+    shortUrl:string;
+    clicks:number;
+    date:string;
+    expirationDate:string;
+    expired:boolean;
+    password:string;
+}
+
