@@ -8,7 +8,8 @@ const CreateLink = () => {
     const [password, setPassword] = useState<string | null>(""); // Link password
     const [url, setUrl] = useState<string>(""); // Long URL
     const [customLink, setCustomLink] = useState<string | null>(""); // Custom link
-    const [experation, setExperation] = useState<string | null>(""); // Experation date
+    const [expiration, setExpiration] = useState<string | null>(""); // Expiration date
+    const [length, setLength] = useState<number>(5); // Length
     const [popup, setPopup] = useState<boolean>(false); // Popup state
     const [popupMessage, setPopupMessage] = useState<string>(""); // Popup message
     const [baseUrl, setBaseUrl] = useState<string>("");
@@ -24,12 +25,21 @@ const CreateLink = () => {
         if (password === "") {
             setPassword(null);
         }
+
+        if (length < 5 && length != 0 || length > 10 && length != 0) {
+            setLength(0);
+            alert("Length should be between 5 and 10");
+            return;
+        }
+
         const data = {
             url: url,
             password: password,
             customShortUrl: customLink,
-            expirationDate: experation // Include expiration date
+            expirationDate: expiration, // Include expiration date
+            length: length >= 5 && length <= 10 ? length : 0 // Include length
         };
+
         axios.post(`${api}/url/create`, data, {
             headers: {
                 "Content-Type": "application/json",
@@ -79,10 +89,21 @@ const CreateLink = () => {
             <div className="input-group flex items-center mb-4">
                 <input
                     className="input w-full p-2 border border-gray-300 rounded text-black"
-                    value={experation || ""}
-                    onChange={(e) => setExperation(e.target.value)}
+                    value={expiration || ""}
+                    onChange={(e) => setExpiration(e.target.value)}
                     type="date"
                     placeholder="*optional"
+                />
+            </div>
+            <div className="input-group flex items-center mb-4">
+                <label className="text-gray-500 mr-2">Length:{length}</label>
+                <input
+                    className="w-full"
+                    value={length}
+                    onChange={(e) => setLength(Number(e.target.value))}
+                    type="range"
+                    min="5"
+                    max="10"
                 />
             </div>
             <button className="button w-full p-2 bg-blue-500 text-white rounded hover:bg-blue-700" onClick={() => createLink()}>Create Link</button>

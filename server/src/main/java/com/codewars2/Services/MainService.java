@@ -31,7 +31,7 @@ public class MainService {
     public String generateShortUrl(String longUrl) {
         String uuid = java.util.UUID.randomUUID().toString();
         uuid = uuid.replaceAll("-", "");
-        String shortUrl = longUrl.substring(8, 11) + uuid.substring(0, 3);
+        String shortUrl = longUrl.substring(8, 10) + uuid.substring(0, 9);
         
         // Check if short url already exists
         if (shortUrlExists(shortUrl)) {
@@ -41,12 +41,16 @@ public class MainService {
     }
     
     //Fixer Method for SQL Error: 1063
-    private String generateUniqueShortUrl(String longUrl) {
+    private String generateUniqueShortUrl(String longUrl, int length) {
         String shortUrl;
         do {
             shortUrl = generateShortUrl(longUrl);
         } while (shortUrlExists(shortUrl));
-        return shortUrl;
+        
+        if(length == 0) {
+            return shortUrl.substring(0, 6);
+        }
+        return shortUrl.substring(0, length);
     }
     
     //Access long URL from short URL (get the long url)
@@ -67,14 +71,14 @@ public class MainService {
     }
     
     //Create URL entity
-    public String createUrl(String longUrl, String shortUrl, String expirationDate, String password, String token) {
+    public String createUrl(String longUrl, String shortUrl, String expirationDate, String password, String token, int length) {
         User user = tokenService.getUserFromToken(token);//Get user from token
         Url url = new Url();
         url.setLongUrl(longUrl);
         
         
-        if (shortUrl == null || shortUrl.isEmpty()|| shortUrl.isBlank()|| shortUrl.equals("")) {
-            shortUrl = generateUniqueShortUrl(longUrl);
+        if (shortUrl == null || shortUrl.isEmpty() || shortUrl.isBlank() || shortUrl.equals("")) {
+            shortUrl = generateUniqueShortUrl(longUrl, length);
         }
         url.setShortUrl(shortUrl);
         
@@ -98,7 +102,7 @@ public class MainService {
     //Update URL entity
     public void updateUrl(String shortUrl, String expirationDate, String password, String token, String oldShortUrl) {
         //Token validation
-        if(!tokenService.validateToken(token)) {
+        if (!tokenService.validateToken(token)) {
             throw new RuntimeException("Invalid token");
         }
         User user = tokenService.getUserFromToken(token);
@@ -107,7 +111,7 @@ public class MainService {
         List<Url> listOfUrls = user.getUrls();
         
         //Check if user has access to this URL
-        if(!listOfUrls.contains(url)) {
+        if (!listOfUrls.contains(url)) {
             throw new RuntimeException("User does not have access to this URL");
         }
         
@@ -117,19 +121,23 @@ public class MainService {
         }
         
         if (password != null && !password.isEmpty() && !password.isBlank() && !password.equals("")) {
-            if(password.equals("<null>")) {
+            if (password.equals("<null>")) {
                 url.setPassword(null);
-            }
-            else {
+            } else {
                 url.setPassword(password);
             }
         }
-       
+        
         if (expirationDate != null && !expirationDate.isEmpty() && !expirationDate.isBlank() && !expirationDate.equals("")) {
-            url.setExpirationDate(LocalDate.parse(expirationDate));
+            if (LocalDate.parse(expirationDate).isBefore(LocalDate.now())) {
+                url.setExpirationDate(null);
+            } else {
+                url.setExpirationDate(LocalDate.parse(expirationDate));
+                url.setExpired(false);
+            }
         }
         
-        if(shortUrl != null && !shortUrl.isEmpty() && !shortUrl.isBlank() && !shortUrl.equals("")) {
+        if (shortUrl != null && !shortUrl.isEmpty() && !shortUrl.isBlank() && !shortUrl.equals("")) {
             url.setShortUrl(shortUrl);
         }
         
@@ -150,10 +158,9 @@ public class MainService {
     
     //Helper method to check if URL is expired
     private boolean isExpired(Url url) {
-        if(url.getExpirationDate() == null) {
+        if (url.getExpirationDate() == null) {
             return false;
-        }
-        else if (url.getExpirationDate() != null && url.getExpirationDate().isBefore(LocalDate.now().plusDays(1))) {
+        } else if (url.getExpirationDate() != null && url.getExpirationDate().isBefore(LocalDate.now().plusDays(1))) {
             url.setExpired(true);//Set URL to expired
             urlRepo.save(url);
             return false;

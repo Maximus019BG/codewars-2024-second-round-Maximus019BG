@@ -26,14 +26,14 @@ public class MainController {
     
     //Create short URL
     @PostMapping("/create")
-    public ResponseEntity<String> createShortUrl(@RequestBody Map<Object, String> url, @RequestHeader("authorization") String user) {
-        String longUrl = url.get("url");
-        String shortUrl = url.get("customShortUrl") != null ? url.get("customShortUrl").describeConstable().orElse(null) : null;
-        String expirationDate = url.get("expirationDate") != null ? url.get("expirationDate").describeConstable().orElse(null) : null;
-        String password = url.get("password") != null ? url.get("password").describeConstable().orElse(null) : null;
-        
+    public ResponseEntity<String> createShortUrl(@RequestBody Map<Object, String> req, @RequestHeader("authorization") String user) {
+        String longUrl = req.get("url");
+        String shortUrl = req.get("customShortUrl") != null ? req.get("customShortUrl").describeConstable().orElse(null) : null;
+        String expirationDate = req.get("expirationDate") != null ? req.get("expirationDate").describeConstable().orElse(null) : null;
+        String password = req.get("password") != null ? req.get("password").describeConstable().orElse(null) : null;
+        int length = req.get("length") != null ? Integer.parseInt(req.get("length").describeConstable().orElse(null)) : 0;
         // Create the URL object
-        String finalUrl = mainService.createUrl(longUrl, shortUrl, expirationDate, password, user);
+        String finalUrl = mainService.createUrl(longUrl, shortUrl, expirationDate, password, user, length);
         
         return ResponseEntity.ok().body(finalUrl);    // Return 200
     }
