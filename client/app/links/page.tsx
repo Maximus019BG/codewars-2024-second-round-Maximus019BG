@@ -20,7 +20,6 @@ const LinksPage = () => {
                     <AllUrls/>
                 </div>
             </div>
-
         </div>
     );
 }

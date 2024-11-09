@@ -28,7 +28,7 @@ export const SessionCheck = () => {
     }).catch((error) => {
         //Invalid session
         window.location.href = '/log-in';
-        console.log('Session is invalid');
+        console.log('Session is invalid'+error);
     });
 };
 
@@ -56,6 +56,6 @@ export const SessionCheckAuth = () => {
         }
     }).catch((error) => {
         //Invalid session
-        console.log('Session is invalid');
+        console.log('Session is invalid'+error);
     });
 }

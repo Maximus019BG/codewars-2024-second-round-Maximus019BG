@@ -107,6 +107,10 @@ public class Url {
     }
     
     public void setPassword(String password) {
+        if(password == null) {
+            this.password = null;
+            return;
+        }
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         this.password = encoder.encode(password);
     }

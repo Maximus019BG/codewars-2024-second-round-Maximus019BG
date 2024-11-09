@@ -4,7 +4,9 @@ import com.codewars2.Models.Url;
 import com.codewars2.Models.User;
 import com.codewars2.Repositories.UrlRepo;
 import com.codewars2.Repositories.UserRepo;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -31,7 +33,7 @@ public class MainService {
     public String generateShortUrl(String longUrl) {
         String uuid = java.util.UUID.randomUUID().toString();
         uuid = uuid.replaceAll("-", "");
-        String shortUrl = longUrl.substring(8, 11) + uuid.substring(0, 3);
+        String shortUrl = longUrl.substring(8, 10) + uuid.substring(0, 9);
         
         // Check if short url already exists
         if (shortUrlExists(shortUrl)) {
@@ -41,12 +43,16 @@ public class MainService {
     }
     
     //Fixer Method for SQL Error: 1063
-    private String generateUniqueShortUrl(String longUrl) {
+    private String generateUniqueShortUrl(String longUrl, int length) {
         String shortUrl;
         do {
             shortUrl = generateShortUrl(longUrl);
         } while (shortUrlExists(shortUrl));
-        return shortUrl;
+        
+        if(length == 0) {
+            return shortUrl.substring(0, 6);
+        }
+        return shortUrl.substring(0, length);
     }
     
     //Access long URL from short URL (get the long url)
@@ -67,14 +73,14 @@ public class MainService {
     }
     
     //Create URL entity
-    public String createUrl(String longUrl, String shortUrl, String expirationDate, String password, String token) {
+    public String createUrl(String longUrl, String shortUrl, String expirationDate, String password, String token, int length) {
         User user = tokenService.getUserFromToken(token);//Get user from token
         Url url = new Url();
         url.setLongUrl(longUrl);
         
         
-        if (shortUrl == null || shortUrl.isEmpty()|| shortUrl.isBlank()|| shortUrl.equals("")) {
-            shortUrl = generateUniqueShortUrl(longUrl);
+        if (shortUrl == null || shortUrl.isEmpty() || shortUrl.isBlank() || shortUrl.equals("")) {
+            shortUrl = generateUniqueShortUrl(longUrl, length);
         }
         url.setShortUrl(shortUrl);
         
@@ -83,7 +89,7 @@ public class MainService {
         }
         
         List<Url> urls = user.getUrls();
-        urls.add(url);
+        urls.add(url); //Add URL to user
         user.setUrls(urls);
         
         if (expirationDate != null && !expirationDate.isEmpty() && !expirationDate.isBlank() && !expirationDate.equals("")) {
@@ -95,10 +101,89 @@ public class MainService {
         return url.getShortUrl();
     }
     
+    //Delete URL entity
+    @Transactional
+    public void deleteUrl(String shortUrl, String token) {
+        Url url = urlRepo.findByShortUrl(shortUrl).orElse(null);
+        if (url == null) {
+            throw new RuntimeException("URL not found");
+        }
+        //Validation
+        User user = tokenService.getUserFromToken(token);
+        if (!user.getUrls().contains(url)) {
+            throw new RuntimeException("User does not have access to this URL");
+        }
+        
+        deleteUrlHelper(url, user);   //Delete the URL
+    }
+    
+    //Update URL entity
+    public void updateUrl(String shortUrl, String expirationDate, String password, String token, String oldShortUrl) {
+        //Token validation
+        if (!tokenService.validateToken(token)) {
+            throw new RuntimeException("Invalid token");
+        }
+        User user = tokenService.getUserFromToken(token);
+        Url url = urlRepo.findByShortUrl(oldShortUrl).orElse(null);
+        
+        List<Url> listOfUrls = user.getUrls();
+        
+        //Check if user has access to this URL
+        if (!listOfUrls.contains(url)) {
+            throw new RuntimeException("User does not have access to this URL");
+        }
+        
+        //Other checks
+        if (url == null) {
+            throw new RuntimeException("URL not found");
+        }
+        
+        if (password != null && !password.isEmpty() && !password.isBlank() && !password.equals("")) {
+            if (password.equals("<null>")) {
+                url.setPassword(null);
+            } else {
+                url.setPassword(password);
+            }
+        }
+        
+        if (expirationDate != null && !expirationDate.isEmpty() && !expirationDate.isBlank() && !expirationDate.equals("")) {
+            if (LocalDate.parse(expirationDate).isBefore(LocalDate.now())) {
+                url.setExpirationDate(null);
+            } else {
+                url.setExpirationDate(LocalDate.parse(expirationDate));
+                url.setExpired(false); //Expire the URL
+            }
+        }
+        
+        if (shortUrl != null && !shortUrl.isEmpty() && !shortUrl.isBlank() && !shortUrl.equals("")) {
+            url.setShortUrl(shortUrl);
+        }
+        
+        urlRepo.save(url);  //Save the URL
+    }
+    
     //Get all URLs for a user
     public List<Url> getAllUrls(String token) {
         User user = tokenService.getUserFromToken(token);
         return user.getUrls();
+    }
+    
+    //Check if URL password is the same as the provided
+    public boolean checkPasswordForUrl(String shortUrl, String password) {
+        Url url = urlRepo.findByShortUrl(shortUrl).orElse(null);
+        if (url == null) {
+            throw new RuntimeException("URL not found");
+        }
+       return BCrypt.checkpw(password, url.getPassword());
+    }
+    
+    //Check if there is a password for a URL!!!!
+    public boolean checkPasswordForPassword(String shortUrl) {
+        Url url = urlRepo.findByShortUrl(shortUrl).orElse(null);
+        if (url == null) {
+            throw new RuntimeException("URL not found");
+        }
+        return url.getPassword() != null;   // Return true if there is a password and false if there isn't
     }
     
     //Helpers
@@ -109,10 +194,9 @@ public class MainService {
     
     //Helper method to check if URL is expired
     private boolean isExpired(Url url) {
-        if(url.getExpirationDate() == null) {
+        if (url.getExpirationDate() == null) {
             return false;
-        }
-        else if (url.getExpirationDate() != null && url.getExpirationDate().isBefore(LocalDate.now().plusDays(1))) {
+        } else if (url.getExpirationDate() != null && url.getExpirationDate().isBefore(LocalDate.now().plusDays(1))) {
             url.setExpired(true);//Set URL to expired
             urlRepo.save(url);
             return false;
@@ -128,5 +212,13 @@ public class MainService {
         }
         url.setClicks(url.getClicks() + 1);
         urlRepo.save(url);
+    }
+    
+    //Helper method for deleting URL
+    private void deleteUrlHelper(Url url, User user) {
+        List<Url> urls = user.getUrls();
+        urls.remove(url);
+        user.setUrls(urls);
+        urlRepo.delete(url);
     }
 }
