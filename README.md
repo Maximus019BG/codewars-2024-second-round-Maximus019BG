@@ -47,6 +47,7 @@ ZipURL is a high-performance, scalable URL shortener built with Java Spring Boot
    DB_PASSWORD=root
    JWT_SECRET=secret
    ```
+
 1. **Clone the repository**:
     ```sh
     git clone https://github.com/ITPG-CODEWARS/codewars-2024-second-round-Maximus019BG.git
@@ -58,7 +59,7 @@ ZipURL is a high-performance, scalable URL shortener built with Java Spring Boot
         ```sh
         cd server
         ```
-    - Build the project using Maven:
+    - Build the docker compose:
         ```sh
          docker-compose up --build
         ```

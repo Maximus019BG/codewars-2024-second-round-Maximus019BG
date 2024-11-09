@@ -36,6 +36,9 @@ public class Url {
     @Column
     private String password;
     
+    @Column(nullable = true, columnDefinition = "int default -1")
+    private int maxClicks;
+    
     //PrePersist method (called before the entity is persisted)
     @PrePersist
     public void prePersist() {
@@ -100,6 +103,14 @@ public class Url {
     
     public void setExpired(boolean expired) {
         isExpired = expired;
+    }
+    
+    public int getMaxClicks() {
+        return maxClicks;
+    }
+    
+    public void setMaxClicks(int maxClicks) {
+        this.maxClicks = maxClicks;
     }
     
     public String getPassword() {

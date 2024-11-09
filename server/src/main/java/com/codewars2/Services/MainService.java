@@ -69,15 +69,20 @@ public class MainService {
         } else {
             throw new RuntimeException("URL not found");
         }
-        return url.getLongUrl();
+        if(checkClicks(shortUrl)){
+             return url.getLongUrl();
+        }
+        else{
+            throw new RuntimeException("URL has reached max clicks");
+        }
     }
     
+    
     //Create URL entity
-    public String createUrl(String longUrl, String shortUrl, String expirationDate, String password, String token, int length) {
+    public String createUrl(String longUrl, String shortUrl, String expirationDate, String password, String token, int length, int maxClicks) {
         User user = tokenService.getUserFromToken(token);//Get user from token
         Url url = new Url();
         url.setLongUrl(longUrl);
-        
         
         if (shortUrl == null || shortUrl.isEmpty() || shortUrl.isBlank() || shortUrl.equals("")) {
             shortUrl = generateUniqueShortUrl(longUrl, length);
@@ -86,6 +91,10 @@ public class MainService {
         
         if (password != null && !password.isEmpty() && !password.isBlank() && !password.equals("")) {
             url.setPassword(password);
+        }
+        
+        if(maxClicks > 0 ) {
+            url.setMaxClicks(maxClicks);
         }
         
         List<Url> urls = user.getUrls();
@@ -220,5 +229,20 @@ public class MainService {
         urls.remove(url);
         user.setUrls(urls);
         urlRepo.delete(url);
+    }
+    
+    //Helper method: Check clicks
+    private boolean checkClicks(String shortUrl) {
+        Url url = urlRepo.findByShortUrl(shortUrl).orElse(null);
+        assert url != null; //Check if URL is null
+        //if no max clicks return true
+        if(url.getMaxClicks() < 0 ) {
+            return true;
+        }
+        //Get bought clicks
+        int clicks = url.getClicks();
+        int maxClicks = url.getMaxClicks();
+        
+        return clicks <= maxClicks; //Return true if clicks are less than max
     }
 }

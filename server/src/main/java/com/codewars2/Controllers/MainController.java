@@ -32,8 +32,9 @@ public class MainController {
         String expirationDate = req.get("expirationDate") != null ? req.get("expirationDate").describeConstable().orElse(null) : null;
         String password = req.get("password") != null ? req.get("password").describeConstable().orElse(null) : null;
         int length = req.get("length") != null ? Integer.parseInt(req.get("length").describeConstable().orElse(null)) : 0;
+        int maxClicks = req.get("maxClicks") != null ? Integer.parseInt(req.get("maxClicks").describeConstable().orElse(null)) : 0;
         // Create the URL object
-        String finalUrl = mainService.createUrl(longUrl, shortUrl, expirationDate, password, user, length);
+        String finalUrl = mainService.createUrl(longUrl, shortUrl, expirationDate, password, user, length, maxClicks);
         
         return ResponseEntity.ok().body(finalUrl);    // Return 200
     }

@@ -10,6 +10,7 @@ const CreateLink = () => {
     const [customLink, setCustomLink] = useState<string | null>(""); // Custom link
     const [expiration, setExpiration] = useState<string | null>(""); // Expiration date
     const [length, setLength] = useState<number>(5); // Length
+    const [maxClicks, setMaxClicks] = useState<number | null>(null); // Max clicks
     const [popup, setPopup] = useState<boolean>(false); // Popup state
     const [popupMessage, setPopupMessage] = useState<string>(""); // Popup message
     const [baseUrl, setBaseUrl] = useState<string>("");
@@ -37,7 +38,8 @@ const CreateLink = () => {
             password: password,
             customShortUrl: customLink,
             expirationDate: expiration, // Include expiration date
-            length: length >= 5 && length <= 10 ? length : 0 // Include length
+            length: length >= 5 && length <= 10 ? length : 0, // Include length
+            maxClicks: maxClicks // Include max clicks
         };
 
         axios.post(`${api}/url/create`, data, {
@@ -104,6 +106,15 @@ const CreateLink = () => {
                     type="range"
                     min="5"
                     max="10"
+                />
+            </div>
+            <div className="input-group flex items-center mb-4">
+                <input
+                    className="input w-full p-2 border border-gray-300 rounded text-black"
+                    value={maxClicks || ""}
+                    onChange={(e) => setMaxClicks(Number(e.target.value))}
+                    type="number"
+                    placeholder="Max clicks *optional"
                 />
             </div>
             <button className="button w-full p-2 bg-blue-500 text-white rounded hover:bg-blue-700" onClick={() => createLink()}>Create Link</button>
