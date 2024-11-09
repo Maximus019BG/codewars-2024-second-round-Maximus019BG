@@ -62,6 +62,12 @@ public class AuthService {
         return tokens;
     }
     
+    //Logout
+    public void logout(String accessToken, String refreshToken) {
+        // Delete the tokens
+        tokenService.deleteTokens(accessToken, refreshToken);
+    }
+    
     // Check the session
     public Map<String, String> checkSession(String accessToken, String refreshToken) {
         // Check if tokens exist

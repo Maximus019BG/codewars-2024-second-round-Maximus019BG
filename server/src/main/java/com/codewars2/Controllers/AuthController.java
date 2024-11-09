@@ -1,13 +1,10 @@
 package com.codewars2.Controllers;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import com.codewars2.Services.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 import java.util.Map;
@@ -70,5 +67,16 @@ public class AuthController {
                 return ResponseEntity.ok().body(newTokens); //Return new access token + 200
             }
             return ResponseEntity.ok().body("Session is valid");//Return 200
+        }
+        
+        @PutMapping("/logout")
+        public ResponseEntity<?> logout(@RequestBody Map<Object, Object> request) {
+            //Extract the tokens
+            String accessToken = (String) request.get("accessToken");
+            String refreshToken = (String) request.get("refreshToken");
+            
+            authService.logout(accessToken, refreshToken); //Logout the user
+     
+            return ResponseEntity.ok().body("Loged out");//Return 200
         }
 }

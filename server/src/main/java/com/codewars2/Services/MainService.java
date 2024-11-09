@@ -4,7 +4,9 @@ import com.codewars2.Models.Url;
 import com.codewars2.Models.User;
 import com.codewars2.Repositories.UrlRepo;
 import com.codewars2.Repositories.UserRepo;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -87,7 +89,7 @@ public class MainService {
         }
         
         List<Url> urls = user.getUrls();
-        urls.add(url);
+        urls.add(url); //Add URL to user
         user.setUrls(urls);
         
         if (expirationDate != null && !expirationDate.isEmpty() && !expirationDate.isBlank() && !expirationDate.equals("")) {
@@ -97,6 +99,22 @@ public class MainService {
         urlRepo.save(url);
         userRepo.save(user);
         return url.getShortUrl();
+    }
+    
+    //Delete URL entity
+    @Transactional
+    public void deleteUrl(String shortUrl, String token) {
+        Url url = urlRepo.findByShortUrl(shortUrl).orElse(null);
+        if (url == null) {
+            throw new RuntimeException("URL not found");
+        }
+        //Validation
+        User user = tokenService.getUserFromToken(token);
+        if (!user.getUrls().contains(url)) {
+            throw new RuntimeException("User does not have access to this URL");
+        }
+        
+        deleteUrlHelper(url, user);   //Delete the URL
     }
     
     //Update URL entity
@@ -133,7 +151,7 @@ public class MainService {
                 url.setExpirationDate(null);
             } else {
                 url.setExpirationDate(LocalDate.parse(expirationDate));
-                url.setExpired(false);
+                url.setExpired(false); //Expire the URL
             }
         }
         
@@ -148,6 +166,24 @@ public class MainService {
     public List<Url> getAllUrls(String token) {
         User user = tokenService.getUserFromToken(token);
         return user.getUrls();
+    }
+    
+    //Check if URL password is the same as the provided
+    public boolean checkPasswordForUrl(String shortUrl, String password) {
+        Url url = urlRepo.findByShortUrl(shortUrl).orElse(null);
+        if (url == null) {
+            throw new RuntimeException("URL not found");
+        }
+       return BCrypt.checkpw(password, url.getPassword());
+    }
+    
+    //Check if there is a password for a URL!!!!
+    public boolean checkPasswordForPassword(String shortUrl) {
+        Url url = urlRepo.findByShortUrl(shortUrl).orElse(null);
+        if (url == null) {
+            throw new RuntimeException("URL not found");
+        }
+        return url.getPassword() != null;   // Return true if there is a password and false if there isn't
     }
     
     //Helpers
@@ -176,5 +212,13 @@ public class MainService {
         }
         url.setClicks(url.getClicks() + 1);
         urlRepo.save(url);
+    }
+    
+    //Helper method for deleting URL
+    private void deleteUrlHelper(Url url, User user) {
+        List<Url> urls = user.getUrls();
+        urls.remove(url);
+        user.setUrls(urls);
+        urlRepo.delete(url);
     }
 }

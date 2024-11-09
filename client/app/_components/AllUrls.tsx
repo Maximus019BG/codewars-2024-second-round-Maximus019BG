@@ -13,6 +13,8 @@ const AllUrls = () => {
     const [editIndex, setEditIndex] = useState<number | null>(null);
     const [formData, setFormData] = useState<UrlTypeEdit | null>(null);
     const [oldShortUrl, setOldShortUrl] = useState<string>("");
+    const [showDeletePopup, setShowDeletePopup] = useState<boolean>(false);
+    const [deleteIndex, setDeleteIndex] = useState<number | null>(null);
 
     useEffect(() => {
         if (typeof window !== "undefined") {
@@ -81,6 +83,29 @@ const AllUrls = () => {
         }
     };
 
+    const handleDelete = (index: number) => {
+        setDeleteIndex(index);
+        setShowDeletePopup(true);
+    };
+
+    const confirmDelete = () => {
+        if (deleteIndex !== null) {
+            const url = urls[deleteIndex];
+            axios.delete(`${api}/url/delete/${url.shortUrl}`, {
+                headers: {
+                    "Content-Type": "application/json",
+                    "authorization": Cookies.get("accessToken"),
+                }
+            }).then(() => {
+                setUrls(urls.filter((_, index) => index !== deleteIndex));
+                setShowDeletePopup(false);
+                setDeleteIndex(null);
+            }).catch((error) => {
+                console.error(error);
+            });
+        }
+    };
+
     return (
         <div className="min-h-full p-4 text-gray-200 bg-gray-900">
             <h1 className="text-2xl mb-4 font-semibold">All URLs</h1>
@@ -93,7 +118,7 @@ const AllUrls = () => {
                         {baseUrl}{url.shortUrl}
                     </button>
                     <div
-                        className={`overflow-hidden transition-max-height duration-500 ease-in-out ${activeIndex === index ? 'max-h-screen' : 'max-h-0'}`}
+                        className={`overflow-hidden transition-max-height duration-500 ease-in-out ${activeIndex === index ? 'max-h-full' : 'max-h-0'}`}
                     >
                         <div className="p-4 bg-gray-800 shadow-md rounded-md">
                             <div className="flex justify-between items-center mb-4">
@@ -139,7 +164,7 @@ const AllUrls = () => {
                                         </div>
                                     ) : (
                                         <>
-                                        <p className="text-sm text-gray-400">Long URL: {url.longUrl}</p>
+                                            <p className="text-sm text-gray-400">Long URL: {url.longUrl}</p>
                                             <p className="text-sm text-gray-400">Clicks: {url.clicks}</p>
                                             <p className="text-sm text-gray-400">Date: {url.date}</p>
                                             <p className="text-sm text-gray-400">Expiration Date: {url.expirationDate}</p>
@@ -149,6 +174,12 @@ const AllUrls = () => {
                                                 onClick={() => handleEdit(index)}
                                             >
                                                 Edit
+                                            </button>
+                                            <button
+                                                className="mt-2 px-3 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors duration-200 ml-2"
+                                                onClick={() => handleDelete(index)}
+                                            >
+                                                Delete
                                             </button>
                                         </>
                                     )}
@@ -169,6 +200,27 @@ const AllUrls = () => {
                     </div>
                 </div>
             ))}
+            {showDeletePopup && (
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                    <div className="bg-gray-800 p-4 rounded-md">
+                        <p className="text-gray-200 mb-4">Are you sure you want to delete this URL?</p>
+                        <div className="flex justify-end">
+                            <button
+                                className="px-3 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition-colors duration-200 mr-2"
+                                onClick={confirmDelete}
+                            >
+                                Yes
+                            </button>
+                            <button
+                                className="px-3 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors duration-200"
+                                onClick={() => setShowDeletePopup(false)}
+                            >
+                                No
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
