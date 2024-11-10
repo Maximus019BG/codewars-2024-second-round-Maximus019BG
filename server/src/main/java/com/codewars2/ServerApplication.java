@@ -13,10 +13,10 @@ public class ServerApplication {
         //ENV
         Dotenv dotenv = Dotenv.configure().load();
 		
-        System.setProperty("db-url", Objects.requireNonNull(dotenv.get("DB_URL")));
-        System.setProperty("db-username", Objects.requireNonNull(dotenv.get("DB_USER")));
-        System.setProperty("db-password", Objects.requireNonNull(dotenv.get("DB_PASS")));
-        System.setProperty("secretJWT", Objects.requireNonNull(dotenv.get("SECRET_JWT")));
+        System.setProperty("DB_URL", Objects.requireNonNull(dotenv.get("DB_URL")));
+        System.setProperty("DB_USER", Objects.requireNonNull(dotenv.get("DB_USER")));
+        System.setProperty("DB_PASS", Objects.requireNonNull(dotenv.get("DB_PASS")));
+        System.setProperty("SECRET_JWT", Objects.requireNonNull(dotenv.get("SECRET_JWT")));
 
         SpringApplication.run(ServerApplication.class, args);
     }

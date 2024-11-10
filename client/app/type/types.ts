@@ -10,6 +10,7 @@ export interface UrlType{
     date:string;
     expirationDate:string;
     expired:boolean;
+    maxClicks:number;
 }
 //URL type for editing
 export interface UrlTypeEdit{
@@ -21,5 +22,6 @@ export interface UrlTypeEdit{
     expirationDate:string;
     expired:boolean;
     password:string;
+    maxClicks:number;
 }
 

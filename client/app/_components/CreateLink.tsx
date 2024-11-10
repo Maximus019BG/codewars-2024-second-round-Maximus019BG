@@ -1,15 +1,18 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, {useState, useEffect} from "react";
 import axios from "axios";
-import { api } from "@/app/api/conf";
+import {api} from "@/app/api/conf";
 import Cookies from "js-cookie";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const CreateLink = () => {
     const [password, setPassword] = useState<string | null>(""); // Link password
     const [url, setUrl] = useState<string>(""); // Long URL
     const [customLink, setCustomLink] = useState<string | null>(""); // Custom link
-    const [expiration, setExpiration] = useState<string | null>(""); // Expiration date
+    const [expiration, setExpiration] = useState<Date | null>(null); // Expiration date
     const [length, setLength] = useState<number>(5); // Length
+    const [maxClicks, setMaxClicks] = useState<number | null>(null); // Max clicks
     const [popup, setPopup] = useState<boolean>(false); // Popup state
     const [popupMessage, setPopupMessage] = useState<string>(""); // Popup message
     const [baseUrl, setBaseUrl] = useState<string>("");
@@ -36,8 +39,9 @@ const CreateLink = () => {
             url: url,
             password: password,
             customShortUrl: customLink,
-            expirationDate: expiration, // Include expiration date
-            length: length >= 5 && length <= 10 ? length : 0 // Include length
+            expirationDate: expiration ? expiration.toISOString().split('T')[0] : null, // Include expiration date
+            length: length >= 5 && length <= 10 ? length : 0, // Include length
+            maxClicks: maxClicks ? maxClicks : -1 // Include max clicks
         };
 
         axios.post(`${api}/url/create`, data, {
@@ -59,9 +63,9 @@ const CreateLink = () => {
     return (
         <div className="mx-auto p-4 w-1/2">
             <div className="input-group flex items-center mb-4">
-                <span className="prefix text-gray-500 bg-white p-2 border border-gray-300 rounded-l">{baseUrl}</span>
+                <span className="prefix text-gray-500 bg-darkGray p-2 border border-gray-300 rounded-l">{baseUrl}</span>
                 <input
-                    className="input w-full p-2 border-t border-r border-b border-gray-300 rounded-r text-black"
+                    className="input w-full p-2 border-t border-r border-b border-gray-300 rounded-r text-white bg-darkGray"
                     value={customLink || ""}
                     onChange={(e) => setCustomLink(e.target.value)}
                     type="text"
@@ -70,7 +74,7 @@ const CreateLink = () => {
             </div>
             <div className="input-group flex items-center mb-4">
                 <input
-                    className="input w-full p-2 border border-gray-300 rounded text-black"
+                    className="input w-full p-2 border border-gray-300 rounded text-white bg-darkGray"
                     value={url}
                     onChange={(e) => setUrl(e.target.value)}
                     type="text"
@@ -79,24 +83,24 @@ const CreateLink = () => {
             </div>
             <div className="input-group flex items-center mb-4">
                 <input
-                    className="input w-full p-2 border border-gray-300 rounded text-black"
+                    className="input w-full p-2 border border-gray-300 rounded text-white bg-darkGray"
                     value={password || ""}
                     onChange={(e) => setPassword(e.target.value)}
                     type="password"
                     placeholder="Password for the link   *optional"
                 />
             </div>
-            <div className="input-group flex items-center mb-4">
-                <input
-                    className="input w-full p-2 border border-gray-300 rounded text-black"
-                    value={expiration || ""}
-                    onChange={(e) => setExpiration(e.target.value)}
-                    type="date"
-                    placeholder="*optional"
+            <div className="input-group flex items-center mb-4 relative">
+                <DatePicker
+                    className="input w-full p-3 pl-4 pr-12 border border-gray-300 rounded text-white bg-darkGray focus:outline-none focus:ring-2 focus:ring-yellow transition-all"
+                    selected={expiration}
+                    onChange={(date: Date | null) => setExpiration(date)}
+                    placeholderText="DD/MM/YYYY"
+                    dateFormat="DD/mm/yyyy"
                 />
             </div>
             <div className="input-group flex items-center mb-4">
-                <label className="text-gray-500 mr-2">Length:{length}</label>
+                <label className="text-gray-500 mr-2">Length: {length}</label>
                 <input
                     className="w-full"
                     value={length}
@@ -104,15 +108,33 @@ const CreateLink = () => {
                     type="range"
                     min="5"
                     max="10"
+                    style={{accentColor: "yellow"}}
                 />
             </div>
-            <button className="button w-full p-2 bg-blue-500 text-white rounded hover:bg-blue-700" onClick={() => createLink()}>Create Link</button>
+            <div className="input-group flex items-center mb-4">
+                <input
+                    className="input w-full p-2 border border-gray-300 rounded text-white bg-darkGray"
+                    value={maxClicks || ""}
+                    onChange={(e) => setMaxClicks(Number(e.target.value))}
+                    type="number"
+                    placeholder="Max clicks *optional"
+                />
+            </div>
+            <button
+                className="button w-full p-2 bg-yellow text-black rounded hover:bg-yellow-600"
+                onClick={createLink}
+            >
+                Create Link
+            </button>
             {popup && (
                 <div className="popup fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                    <div className="bg-background p-4 rounded shadow-lg relative">
+                    <div className="bg-darkGray p-4 rounded shadow-lg relative">
                         <button
                             className="absolute text-xl top-2 right-2 text-white"
-                            onClick={() => setPopup(false)}
+                            onClick={() => {
+                                setPopup(false);
+                                window.location.reload();
+                            }}
                         >
                             &times;
                         </button>
@@ -120,9 +142,9 @@ const CreateLink = () => {
                             <h3 className="text-red-500">{popupMessage}</h3>
                         ) : (
                             <div className="px-3 py-2">
-                                <p>Your short link is:{baseUrl}{popupMessage}</p>
+                                <p>Your short link is: {baseUrl}{popupMessage}</p>
                                 <button
-                                    className="button w-full p-2 bg-blue-500 text-white rounded hover:bg-blue-700 mt-2"
+                                    className="button w-full p-2 bg-yellow text-white rounded hover:bg-yellow-600 mt-2"
                                     onClick={() => navigator.clipboard.writeText(baseUrl + popupMessage)}
                                 >
                                     Copy
@@ -134,6 +156,6 @@ const CreateLink = () => {
             )}
         </div>
     );
-}
+};
 
 export default CreateLink;

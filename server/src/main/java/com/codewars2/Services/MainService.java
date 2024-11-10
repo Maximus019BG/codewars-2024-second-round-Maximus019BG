@@ -63,21 +63,26 @@ public class MainService {
             if (isExpired(url)) {
                 throw new RuntimeException("URL is expired");
             }
-            url.setClicks(url.getClicks() + 1);
             incrementClicks(shortUrl);
             urlRepo.save(url);
         } else {
             throw new RuntimeException("URL not found");
         }
-        return url.getLongUrl();
+        if(checkClicks(shortUrl)){
+             return url.getLongUrl();
+        }
+        else{
+            urlRepo.delete(url);
+            throw new RuntimeException("URL has reached max clicks");
+        }
     }
     
+    
     //Create URL entity
-    public String createUrl(String longUrl, String shortUrl, String expirationDate, String password, String token, int length) {
+    public String createUrl(String longUrl, String shortUrl, String expirationDate, String password, String token, int length, int maxClicks) {
         User user = tokenService.getUserFromToken(token);//Get user from token
         Url url = new Url();
         url.setLongUrl(longUrl);
-        
         
         if (shortUrl == null || shortUrl.isEmpty() || shortUrl.isBlank() || shortUrl.equals("")) {
             shortUrl = generateUniqueShortUrl(longUrl, length);
@@ -86,6 +91,13 @@ public class MainService {
         
         if (password != null && !password.isEmpty() && !password.isBlank() && !password.equals("")) {
             url.setPassword(password);
+        }
+        
+        if(maxClicks > 0 ) {
+            url.setMaxClicks(maxClicks);
+        }
+        else{
+            url.setMaxClicks(-1);
         }
         
         List<Url> urls = user.getUrls();
@@ -98,6 +110,7 @@ public class MainService {
         
         urlRepo.save(url);
         userRepo.save(user);
+        
         return url.getShortUrl();
     }
     
@@ -118,7 +131,7 @@ public class MainService {
     }
     
     //Update URL entity
-    public void updateUrl(String shortUrl, String expirationDate, String password, String token, String oldShortUrl) {
+    public void updateUrl(String shortUrl, String expirationDate, String password, String token, String oldShortUrl, int maxClicks) {
         //Token validation
         if (!tokenService.validateToken(token)) {
             throw new RuntimeException("Invalid token");
@@ -137,6 +150,15 @@ public class MainService {
         if (url == null) {
             throw new RuntimeException("URL not found");
         }
+        
+        //Update Max Clicks
+        if(maxClicks > 0 ) {
+            url.setMaxClicks(maxClicks);
+        }
+        else{
+            url.setMaxClicks(-1);
+        }
+        
         
         if (password != null && !password.isEmpty() && !password.isBlank() && !password.equals("")) {
             if (password.equals("<null>")) {
@@ -183,6 +205,10 @@ public class MainService {
         if (url == null) {
             throw new RuntimeException("URL not found");
         }
+        else if(!checkClicks(shortUrl)){
+            urlRepo.delete(url);    //Delete URL if max clicks reached
+            return false;
+        }
         return url.getPassword() != null;   // Return true if there is a password and false if there isn't
     }
     
@@ -211,7 +237,6 @@ public class MainService {
             throw new RuntimeException("URL not found");
         }
         url.setClicks(url.getClicks() + 1);
-        urlRepo.save(url);
     }
     
     //Helper method for deleting URL
@@ -220,5 +245,20 @@ public class MainService {
         urls.remove(url);
         user.setUrls(urls);
         urlRepo.delete(url);
+    }
+    
+    //Helper method: Check clicks
+    private boolean checkClicks(String shortUrl) {
+        Url url = urlRepo.findByShortUrl(shortUrl).orElse(null);
+        assert url != null; //Check if URL is null
+        //if no max clicks return true
+        if(url.getMaxClicks() < 0 ) {
+            return true;
+        }
+        //Get bought clicks
+        int clicks = url.getClicks();
+        int maxClicks = url.getMaxClicks();
+        
+        return clicks <= maxClicks; //Return true if clicks are less than max
     }
 }

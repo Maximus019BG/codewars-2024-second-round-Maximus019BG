@@ -25,10 +25,12 @@ export const SessionCheck = () => {
         } else {
             Cookies.set('accessToken', response.data.accessToken, { secure: true });
         }
-    }).catch((error) => {
+    }).catch(() => {
         //Invalid session
         window.location.href = '/log-in';
-        console.log('Session is invalid'+error);
+        console.log('Session is invalid');
+        Cookies.remove('accessToken');
+        Cookies.remove('refreshToken');
     });
 };
 
@@ -54,8 +56,7 @@ export const SessionCheckAuth = () => {
         } else {
             Cookies.set('accessToken', response.data.accessToken, { secure: true });
         }
-    }).catch((error) => {
-        //Invalid session
-        console.log('Session is invalid'+error);
+    }).catch(() => {
+
     });
 }
