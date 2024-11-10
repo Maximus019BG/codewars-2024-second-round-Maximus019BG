@@ -72,10 +72,6 @@ ZipURL is a high-performance, scalable URL shortener built with Java Spring Boot
         ```
     - Build the docker compose:
         ```sh
-         docker-compose up --build
-        ```
-      or
-        ```sh
         docker compose up --build
         ```
     - wait for the build to finish (it takes a while) and you are done with the backend setup
