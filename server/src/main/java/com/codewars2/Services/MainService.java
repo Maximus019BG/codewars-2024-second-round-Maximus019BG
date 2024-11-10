@@ -63,7 +63,6 @@ public class MainService {
             if (isExpired(url)) {
                 throw new RuntimeException("URL is expired");
             }
-            url.setClicks(url.getClicks() + 1);
             incrementClicks(shortUrl);
             urlRepo.save(url);
         } else {
@@ -73,6 +72,7 @@ public class MainService {
              return url.getLongUrl();
         }
         else{
+            urlRepo.delete(url);
             throw new RuntimeException("URL has reached max clicks");
         }
     }
@@ -96,6 +96,9 @@ public class MainService {
         if(maxClicks > 0 ) {
             url.setMaxClicks(maxClicks);
         }
+        else{
+            url.setMaxClicks(-1);
+        }
         
         List<Url> urls = user.getUrls();
         urls.add(url); //Add URL to user
@@ -107,6 +110,7 @@ public class MainService {
         
         urlRepo.save(url);
         userRepo.save(user);
+        
         return url.getShortUrl();
     }
     
@@ -192,6 +196,10 @@ public class MainService {
         if (url == null) {
             throw new RuntimeException("URL not found");
         }
+        else if(!checkClicks(shortUrl)){
+            urlRepo.delete(url);    //Delete URL if max clicks reached
+            return false;
+        }
         return url.getPassword() != null;   // Return true if there is a password and false if there isn't
     }
     
@@ -220,7 +228,6 @@ public class MainService {
             throw new RuntimeException("URL not found");
         }
         url.setClicks(url.getClicks() + 1);
-        urlRepo.save(url);
     }
     
     //Helper method for deleting URL

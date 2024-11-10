@@ -134,7 +134,7 @@ const AllUrls = () => {
                                                     value={formData?.shortUrl || ""}
                                                     onChange={handleChange}
                                                     placeholder="Enter short URL"
-                                                    className="text-sm text-gray-400 bg-gray-700 p-1 rounded focus:outline-none focus:ring-2 focus:ring-yellow"
+                                                    className="text-sm text-gray-400 bg-darkGray p-1 rounded focus:outline-none focus:ring-2 focus:ring-yellow"
                                                 />
                                             </div>
                                             <input
@@ -143,7 +143,7 @@ const AllUrls = () => {
                                                 value={formData?.expirationDate || ""}
                                                 onChange={handleChange}
                                                 placeholder="Enter expiration date"
-                                                className="text-sm text-gray-400 bg-gray-700 p-1 rounded w-full focus:outline-none focus:ring-2 focus:ring-yellow"
+                                                className="text-sm text-gray-400 bg-darkGray p-1 rounded w-full focus:outline-none focus:ring-2 focus:ring-yellow"
                                             />
                                             <p className="text-xs text-gray-500 mt-1">Enter <span className="font-black">past date</span> to reset the date</p>
                                             <input
@@ -152,7 +152,7 @@ const AllUrls = () => {
                                                 value={formData?.password || ""}
                                                 onChange={handleChange}
                                                 placeholder="Enter password"
-                                                className="text-sm text-gray-400 bg-gray-700 p-1 rounded w-full focus:outline-none focus:ring-2 focus:ring-yellow"
+                                                className="text-sm text-gray-400 bg-darkGray p-1 rounded w-full focus:outline-none focus:ring-2 focus:ring-yellow"
                                             />
                                             <p className="text-xs text-gray-500 mt-1">Type <span className="font-black">&lt;null&gt;</span> to reset the password</p>
                                             <button
@@ -167,8 +167,13 @@ const AllUrls = () => {
                                             <p className="text-sm text-gray-400">Long URL: {url.longUrl}</p>
                                             <p className="text-sm text-gray-400">Clicks: {url.clicks}</p>
                                             <p className="text-sm text-gray-400">Date: {url.date}</p>
-                                            <p className="text-sm text-gray-400">Expiration Date: {url.expirationDate}</p>
+                                            {url.expirationDate && (
+                                                <p className="text-sm text-gray-400">Expiration Date: {url.expirationDate}</p>
+                                            )}
                                             <p className="text-sm text-gray-400">Expired: {url.expired.toString()}</p>
+                                            {url.maxClicks && (
+                                                <p className="text-sm text-gray-400">Max Clicks: {url.maxClicks}</p>
+                                            )}
                                             <button
                                                 className="mt-2 px-3 py-2 bg-yellow text-black rounded hover:bg-yellow-600 transition-colors duration-200"
                                                 onClick={() => handleEdit(index)}
@@ -189,7 +194,7 @@ const AllUrls = () => {
                                         <QRCodeCanvas id={`qr-${url.shortUrl}`} value={`${baseUrl}${url.shortUrl}`} className="mb-2"/>
                                     </div>
                                     <button
-                                        className="mt-2 px-3 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors duration-200"
+                                        className="mt-2 px-3 py-2 bg-yellow text-black rounded hover:bg-blue-600 transition-colors duration-200"
                                         onClick={() => copyQRCode(url.shortUrl)}
                                     >
                                         Copy QR Code

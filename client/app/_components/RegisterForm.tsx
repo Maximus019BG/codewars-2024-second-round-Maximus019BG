@@ -35,9 +35,9 @@ const RegisterForm = () => {
     }, []);
 
     return (
-        <form onSubmit={handleRegister}>
+        <form onSubmit={handleRegister} className="bg-darkGray p-8 rounded w-full max-w-md">
             <div className="mb-4">
-                <label className="block text-white mb-2 " htmlFor="email">
+                <label className="block text-yellow mb-2" htmlFor="email">
                     Email
                 </label>
                 <input
@@ -50,7 +50,7 @@ const RegisterForm = () => {
                 />
             </div>
             <div className="mb-4">
-                <label className="block text-white mb-2" htmlFor="password">
+                <label className="block text-yellow mb-2" htmlFor="password">
                     Password
                 </label>
                 <input
@@ -63,7 +63,7 @@ const RegisterForm = () => {
                 />
             </div>
             <div className="mb-6">
-                <label className="block text-white mb-2" htmlFor="confirmPassword">
+                <label className="block text-yellow mb-2" htmlFor="confirmPassword">
                     Confirm Password
                 </label>
                 <input
@@ -77,7 +77,7 @@ const RegisterForm = () => {
             </div>
             <button
                 type="submit"
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded"
+                className="w-full bg-yellow text-black font-medium py-2 px-4 rounded hover:bg-yellow-600"
             >
                 Register
             </button>

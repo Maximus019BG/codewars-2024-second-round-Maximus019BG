@@ -32,7 +32,8 @@ public class MainController {
         String expirationDate = req.get("expirationDate") != null ? req.get("expirationDate").describeConstable().orElse(null) : null;
         String password = req.get("password") != null ? req.get("password").describeConstable().orElse(null) : null;
         int length = req.get("length") != null ? Integer.parseInt(req.get("length").describeConstable().orElse(null)) : 0;
-        int maxClicks = req.get("maxClicks") != null ? Integer.parseInt(req.get("maxClicks").describeConstable().orElse(null)) : 0;
+        int maxClicks = req.get("maxClicks") != null ? Integer.parseInt(req.get("maxClicks").describeConstable().orElse(String.valueOf(-1))) : -1;
+        
         // Create the URL object
         String finalUrl = mainService.createUrl(longUrl, shortUrl, expirationDate, password, user, length, maxClicks);
         
@@ -42,6 +43,7 @@ public class MainController {
     //Get long URL
     @GetMapping("/get/{shortUrl}")
     public ResponseEntity<String> getLongUrl(@PathVariable String shortUrl, @RequestHeader(required = false) String password) {
+        System.out.println("Accessing URL: " + shortUrl);
         Url url = urlRepo.findByShortUrl(shortUrl).orElse(null);
         
         // Check for password

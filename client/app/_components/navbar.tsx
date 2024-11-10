@@ -37,13 +37,13 @@ const NavBar = () => {
         }
     }
     return (
-        <div className="fixed top-0 left-0 w-full h-16 bg-gray-800 flex items-center justify-between px-4">
+        <div className="fixed top-0 left-0 w-full h-16 bg-darkGray flex items-center justify-between px-4">
             <div className="flex items-center">
-                <h1 className="text-white">ZipURL</h1>
+                <h1 className="text-yellow">ZipURL</h1>
             </div>
             <div className="flex items-center">
-                <Link href="/links" className="text-white hover:bg-gray-700 hover:text-gray-200 rounded-lg px-4 py-2">Links</Link>
-                <button onClick={logout} className="text-white hover:bg-gray-700 hover:text-gray-200 rounded-lg px-4 py-2">Logout</button>
+                <Link href="/links" className="text-yellow hover:bg-gray-700 hover:text-gray-200 rounded-lg px-4 py-2">Links</Link>
+                <button onClick={logout} className="text-yellow hover:bg-gray-700 hover:text-gray-200 rounded-lg px-4 py-2">Logout</button>
             </div>
         </div>
     );
