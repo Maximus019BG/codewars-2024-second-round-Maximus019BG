@@ -1,11 +1,11 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, {useState, useEffect} from "react";
 import axios from "axios";
-import { api } from "@/app/api/conf";
+import {api} from "@/app/api/conf";
 import Cookies from "js-cookie";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { format } from "date-fns"; 
+import {format} from "date-fns";
 
 const CreateLink = () => {
     const [password, setPassword] = useState<string | null>(""); // Link password
@@ -27,7 +27,7 @@ const CreateLink = () => {
     // Date conversion
     const formatExpirationDate = (date: Date | null) => {
         if (!date) return null;
-        return format(date, "MM/dd/yyyy"); // Format the date to MM/dd/YYYY
+        return date ? date.toISOString().split("T")[0] : ""; // Format the date to MM/dd/YYYY
     };
 
     // Create a new link
@@ -46,7 +46,7 @@ const CreateLink = () => {
             url: url,
             password: password,
             customShortUrl: customLink,
-            expirationDate: formatExpirationDate(expiration)?.toString, // Convert the date before sending
+            expirationDate: formatExpirationDate(expiration),
             length: length >= 5 && length <= 10 ? length : 0,
             maxClicks: maxClicks ? maxClicks : -1,
         };
@@ -115,7 +115,7 @@ const CreateLink = () => {
                     type="range"
                     min="5"
                     max="10"
-                    style={{ accentColor: "yellow" }}
+                    style={{accentColor: "yellow"}}
                 />
             </div>
             <div className="input-group flex items-center mb-4">

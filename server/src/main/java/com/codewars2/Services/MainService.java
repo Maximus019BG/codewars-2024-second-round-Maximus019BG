@@ -33,8 +33,13 @@ public class MainService {
     public String generateShortUrl(String longUrl) {
         String uuid = java.util.UUID.randomUUID().toString();
         uuid = uuid.replaceAll("-", "");
-        String shortUrl = longUrl.substring(8, 10) + uuid.substring(0, 9);
-        
+        String shortUrl;
+        if(longUrl.length() < 10) {
+            shortUrl = uuid.substring(0, 11);
+        }
+        else {
+            shortUrl = longUrl.substring(8, 10) + uuid.substring(0, 9);
+        }
         // Check if short url already exists
         if (shortUrlExists(shortUrl)) {
             return generateShortUrl(longUrl);
