@@ -176,6 +176,9 @@ public class MainService {
                 url.setExpired(false); //Expire the URL
             }
         }
+        else{
+            url.setExpirationDate(null);
+        }
         
         if (shortUrl != null && !shortUrl.isEmpty() && !shortUrl.isBlank() && !shortUrl.equals("")) {
             url.setShortUrl(shortUrl);
