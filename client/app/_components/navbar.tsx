@@ -37,7 +37,7 @@ const NavBar = () => {
         }
     }
     return (
-        <div className="fixed top-0 left-0 w-full h-16 bg-darkGray flex items-center justify-between px-4">
+        <div className="fixed top-0 left-0 w-full h-16 z-50 bg-darkGray flex items-center justify-between px-4">
             <div className="flex items-center">
                 <h1 className="text-yellow">ZipURL</h1>
             </div>

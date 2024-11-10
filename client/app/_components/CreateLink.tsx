@@ -1,10 +1,11 @@
 "use client";
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import {api} from "@/app/api/conf";
+import { api } from "@/app/api/conf";
 import Cookies from "js-cookie";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { format } from "date-fns"; 
 
 const CreateLink = () => {
     const [password, setPassword] = useState<string | null>(""); // Link password
@@ -23,13 +24,19 @@ const CreateLink = () => {
         }
     }, []);
 
+    // Date conversion
+    const formatExpirationDate = (date: Date | null) => {
+        if (!date) return null;
+        return format(date, "MM/dd/yyyy"); // Format the date to MM/dd/YYYY
+    };
+
     // Create a new link
     const createLink = () => {
         if (password === "") {
             setPassword(null);
         }
 
-        if (length < 5 && length != 0 || length > 10 && length != 0) {
+        if (length < 5 && length !== 0 || length > 10 && length !== 0) {
             setLength(0);
             alert("Length should be between 5 and 10");
             return;
@@ -39,9 +46,9 @@ const CreateLink = () => {
             url: url,
             password: password,
             customShortUrl: customLink,
-            expirationDate: expiration ? expiration.toISOString().split('T')[0] : null, // Include expiration date
-            length: length >= 5 && length <= 10 ? length : 0, // Include length
-            maxClicks: maxClicks ? maxClicks : -1 // Include max clicks
+            expirationDate: formatExpirationDate(expiration)?.toString, // Convert the date before sending
+            length: length >= 5 && length <= 10 ? length : 0,
+            maxClicks: maxClicks ? maxClicks : -1,
         };
 
         axios.post(`${api}/url/create`, data, {
@@ -95,8 +102,8 @@ const CreateLink = () => {
                     className="input w-full p-3 pl-4 pr-12 border border-gray-300 rounded text-white bg-darkGray focus:outline-none focus:ring-2 focus:ring-yellow transition-all"
                     selected={expiration}
                     onChange={(date: Date | null) => setExpiration(date)}
-                    placeholderText="DD/MM/YYYY"
-                    dateFormat="DD/mm/yyyy"
+                    placeholderText="YYYY/MM/DD"
+                    dateFormat="yyyy/MM/dd" // Display format
                 />
             </div>
             <div className="input-group flex items-center mb-4">
@@ -108,7 +115,7 @@ const CreateLink = () => {
                     type="range"
                     min="5"
                     max="10"
-                    style={{accentColor: "yellow"}}
+                    style={{ accentColor: "yellow" }}
                 />
             </div>
             <div className="input-group flex items-center mb-4">

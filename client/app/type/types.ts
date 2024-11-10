@@ -19,7 +19,7 @@ export interface UrlTypeEdit{
     shortUrl:string;
     clicks:number;
     date:string;
-    expirationDate:string;
+    expirationDate?:string;
     expired:boolean;
     password:string;
     maxClicks:number;

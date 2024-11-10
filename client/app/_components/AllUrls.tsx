@@ -157,7 +157,7 @@ const AllUrls = () => {
                                                     selected={formData?.expirationDate ? new Date(formData.expirationDate) : null}
                                                     onChange={handleDateChange}
                                                     placeholderText="Select new expiration date"
-                                                    dateFormat="DD/mm/yyyy"
+                                                    dateFormat="yyyy/MM/dd"
                                                     className="text-sm text-gray-400 bg-darkGray p-1 rounded w-full focus:outline-none focus:ring-2 focus:ring-yellow"
                                                 />
                                             </div>
