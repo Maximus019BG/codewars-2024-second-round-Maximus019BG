@@ -62,7 +62,7 @@ ZipURL is a high-performance, scalable URL shortener built with Java Spring Boot
 1. **Clone the repository**:
     ```sh
     git clone https://github.com/ITPG-CODEWARS/codewars-2024-second-round-Maximus019BG.git
-    cd codewars-2024-second-round-Maximus019BG.git
+    cd codewars-2024-second-round-Maximus019BG
     ```
 
 2. **Backend and Database Setup**:
