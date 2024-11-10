@@ -16,7 +16,7 @@ export default function Home() {
                             Register
                         </button>
                     </Link>
-                    <Link href="/login">
+                    <Link href="/log-in">
                         <button
                             className="bg-yellow hover:bg-amber-500 text-darkGray font-medium py-2 px-6 rounded transform hover:scale-110 transition-transform duration-300"
                             type="button"
