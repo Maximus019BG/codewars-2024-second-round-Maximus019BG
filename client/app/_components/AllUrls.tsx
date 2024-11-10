@@ -236,7 +236,7 @@ const AllUrls = () => {
                                         <QRCodeCanvas id={`qr-${url.shortUrl}`} value={`${baseUrl}${url.shortUrl}`} className="mb-2"/>
                                     </div>
                                     <button
-                                        className="mt-2 px-3 py-2 bg-yellow text-black rounded hover:bg-blue-600 transition-colors duration-200"
+                                        className="mt-2 px-3 py-2 bg-yellow text-black rounded hover:bg-amber-600 transition-colors duration-200"
                                         onClick={() => copyQRCode(url.shortUrl)}
                                     >
                                         Copy QR Code
