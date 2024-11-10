@@ -1,0 +1,38 @@
+services:
+  codewarsdb:
+    image: mysql:8.0.28
+    environment:
+      MYSQL_DATABASE: '${DB_NAME}'
+      MYSQL_ROOT_PASSWORD: '${DB_PASS}'
+    ports:
+      - "3307:3306"
+    networks:
+      - app-network
+    volumes:
+      - db-data:/var/lib/mysql
+      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    restart: always
+
+  codewarsapp:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    depends_on:
+      - codewarsdb
+    ports:
+      - "8080:8080"
+    networks:
+      - app-network
+    environment:
+      DB_URL: '${DB_URL}'
+      DB_USER: '${DB_USER}'
+      DB_PASS: '${DB_PASS}'
+      SECRET_JWT: '${SECRET_JWT}'
+    restart: always
+
+volumes:
+  db-data:
+
+networks:
+  app-network:
+    driver: bridge

@@ -131,7 +131,7 @@ public class MainService {
     }
     
     //Update URL entity
-    public void updateUrl(String shortUrl, String expirationDate, String password, String token, String oldShortUrl) {
+    public void updateUrl(String shortUrl, String expirationDate, String password, String token, String oldShortUrl, int maxClicks) {
         //Token validation
         if (!tokenService.validateToken(token)) {
             throw new RuntimeException("Invalid token");
@@ -150,6 +150,15 @@ public class MainService {
         if (url == null) {
             throw new RuntimeException("URL not found");
         }
+        
+        //Update Max Clicks
+        if(maxClicks > 0 ) {
+            url.setMaxClicks(maxClicks);
+        }
+        else{
+            url.setMaxClicks(-1);
+        }
+        
         
         if (password != null && !password.isEmpty() && !password.isBlank() && !password.equals("")) {
             if (password.equals("<null>")) {

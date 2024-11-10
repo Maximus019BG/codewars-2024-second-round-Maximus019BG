@@ -69,8 +69,9 @@ public class MainController {
         String expirationDate = url.get("expirationDate");
         String password = url.get("password");
         String oldShortUrl = url.get("oldShortUrl");
+        int maxClicks = url.get("maxClicks") != null ? Integer.parseInt(url.get("maxClicks").describeConstable().orElse(String.valueOf(-1))) : -1;
         
-        mainService.updateUrl(shortUrl, expirationDate, password, user, oldShortUrl);
+        mainService.updateUrl(shortUrl, expirationDate, password, user, oldShortUrl, maxClicks);
         
         return ResponseEntity.ok().body("URL updated successfully");    //Return 200
     }

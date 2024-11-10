@@ -95,8 +95,8 @@ const CreateLink = () => {
                     className="input w-full p-3 pl-4 pr-12 border border-gray-300 rounded text-white bg-darkGray focus:outline-none focus:ring-2 focus:ring-yellow transition-all"
                     selected={expiration}
                     onChange={(date: Date | null) => setExpiration(date)}
-                    placeholderText="MM/DD/YYYY"
-                    dateFormat="MM/dd/yyyy"
+                    placeholderText="DD/MM/YYYY"
+                    dateFormat="DD/mm/yyyy"
                 />
             </div>
             <div className="input-group flex items-center mb-4">

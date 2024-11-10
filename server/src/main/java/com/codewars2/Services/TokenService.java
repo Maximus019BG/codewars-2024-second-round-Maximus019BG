@@ -32,7 +32,7 @@ public class TokenService {
     public String generateToken(TokenType tokenType, User user, String issuer) {
         String token = "";
         String token_type = tokenType.toString(); //REFRESH_TOKEN or ACCESS_TOKEN
-        String secret = System.getProperty("secretJWT"); //Secret key for JWT
+        String secret = System.getProperty("SECRET_JWT"); //Secret key for JWT
         Long time = 0L;
         
         //Time based on token type
@@ -110,7 +110,7 @@ public class TokenService {
     //Validate token
     public boolean validateToken(String token) {
         //Get secret key
-        String secret = System.getProperty("secretJWT");
+        String secret = System.getProperty("SECRET_JWT");
         Token tokenObj = null;
         boolean isValid = false;
         //Check if token is valid
