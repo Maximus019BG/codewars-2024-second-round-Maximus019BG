@@ -48,7 +48,7 @@ ZipURL is a high-performance, scalable URL shortener built with Java Spring Boot
 
 > [!IMPORTANT]
 > - *The .env files should contain the following variables (change with your credentials)*
-> - ***Note:*** *You need to create a .env file in the root directory of the project ( / )  **AND** in the server directory ( /server )*
+> - ***Note:*** *You need to create a .env file in the root directory of the project ("/")  **AND** in the server directory (/server)*
 > - ***Note:*** *You need to have *docker* and *Node.js* installed on your machine*
 > - ***Note:*** *Ports 3000 (client) and `8080` (server) and `3307` (database is usually on 3306 you should have any problem) need to be free (not used by other program)*
 >
