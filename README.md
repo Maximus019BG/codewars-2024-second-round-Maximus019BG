@@ -62,8 +62,8 @@ ZipURL is a high-performance, scalable URL shortener built with Java Spring Boot
    DB_PASSWORD=root
    #Change <database_name> with your database name should be the same as the one in DB_URL
    DB_NAME=<database_name>
-   #Change with your secret
-   JWT_SECRET=secret
+   #Change <secret> with your secret
+   JWT_SECRET=<secret>
    ```
 
 1. **Clone the repository**:
