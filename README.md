@@ -45,10 +45,13 @@ ZipURL is a high-performance, scalable URL shortener built with Java Spring Boot
 - **Docker** (for containerization)
 
 ### Installation
-***Note:*** *You need to create a .env file in the root directory of the project ( / )  **AND** in the server directory ( /server )*
 
-*The .env files should contain the following variables (change with your credentials)*
-
+> [!IMPORTANT]
+> - *The .env files should contain the following variables (change with your credentials)*
+> - ***Note:*** *You need to create a .env file in the root directory of the project ( / )  **AND** in the server directory ( /server )*
+> - ***Note:*** *You need to have *docker* and *Node.js* installed on your machine*
+> - ***Note:*** *Ports 3000 (client) and `8080` (server) and `3307` (database is usually on 3306 you should have any problem) need to be free (not used by other program)*
+>
    ```dotenv
    #Change <database_name> with your database name  (should be the same as the one in DB_NAME)
    DB_URL=jdbc:mysql://codewarsdb:3306/<database_name>
@@ -61,17 +64,6 @@ ZipURL is a high-performance, scalable URL shortener built with Java Spring Boot
    #Change with your secret
    JWT_SECRET=secret
    ```
-***Note:*** *Ports 3000 (client) and `8080` (server) and `3307` (database is usually on 3306 you should have any problem) need to be free (not used by other program)*
-
-***Note:*** *You need to have *docker* and *Node.js* installed on your machine*
-
-
-
-> [!IMPORTANT]
-> - ***Note:*** *You need to have *docker* and *Node.js* installed on your machine*
-> - ***Note:*** *Ports 3000 (client) and `8080` (server) and `3307` (database is usually on 3306 you should have any problem) need to be free (not used by other program)*
-> - *The .env files should contain the following variables (change with your credentials)*
-> - ***Note:*** *You need to create a .env file in the root directory of the project ( / )  **AND** in the server directory ( /server )*
 
 1. **Clone the repository**:
     ```sh
@@ -80,55 +72,57 @@ ZipURL is a high-performance, scalable URL shortener built with Java Spring Boot
     ```
 
 2. **Backend and Database Setup**:
-    - Navigate to the backend directory:
-        ```sh
-        cd server
-        ```
-    - Build the docker compose:
-        ```sh
-        docker compose up --build
-        ```
-    - wait for the build to finish (it takes a while) and you are done with the backend setup
-   
+   - Navigate to the backend directory:
+       ```sh
+       cd server
+       ```
+   - Build the docker compose:
+       ```sh
+       docker compose up --build
+       ```
+   - wait for the build to finish (it takes a while) and you are done with the backend setup
+   -
+> [!TIP]
+> While waiting start the client (frontend)
+
 
 3. **Frontend Setup**:
-    - **Open new terminal** and *navigate* to the frontend directory:
-        ```sh
-        cd client
-        ```
-    - Install dependencies:
-        ```sh
-        npm install
-        ```
-      or
-        ```sh
-        npm i
-        ```
-    - Build the Next.js application:
-        ```sh
-        npm run build
-        ```
-    - Start the frontend server:
-        ```sh
-        npm run start
-        ```
+   - **Open new terminal** and *navigate* to the frontend directory:
+       ```sh
+       cd client
+       ```
+   - Install dependencies:
+       ```sh
+       npm install
+       ```
+     or
+       ```sh
+       npm i
+       ```
+   - Build the Next.js application:
+       ```sh
+       npm run build
+       ```
+   - Start the frontend server:
+       ```sh
+       npm run start
+       ```
 
 ## 📈 Usage
 1. **Access the Application**:
-    - Open your browser and navigate to `http://localhost:3000` for the frontend.
-    - The backend API will be available at `http://localhost:8080`.
-
+   - Open your browser and navigate to `http://localhost:3000` for the frontend.
+   - The backend API will be available at `http://localhost:8080`.
 
 2. **Shorten a URL**:
-    - Use the frontend interface to input a long URL and generate a short link.
-    - You can also create a custom alias for the short link.
-    - Set an expiration date for temporary links.
-    - Set the number of clicks after which the link will expire.
-    - And Other
+   - Use the frontend interface to input a long URL and generate a short link.
+   - You can also create a custom alias for the short link.
+   - Set an expiration date for temporary links.
+   - Set the number of clicks after which the link will expire.
+   - And Other
 
 
 3. **Monitor Link Performance**:
-    - Access the analytics dashboard to monitor the performance of your short links.
+   - Access the analytics dashboard to monitor the performance of your short links.
       - Track the number of clicks.
       - View the date of creation.
       - Check the expiration date.
@@ -139,11 +133,13 @@ ZipURL is a high-performance, scalable URL shortener built with Java Spring Boot
          - Change the number of clicks after which the link will expire
          - Change the alias
       - Delete the link
-   
+
 
 ## 🤝❌ Contributing
-We **DO NOT** accept contributions at this time.
-Its olympiad project after all.
+
+> [!CAUTION]
+> We **DO NOT** accept contributions at this time.
+> Its olympiad project after all.
 
 ## 📧 Contact
 For any inquiries or feedback, please contact us at [maksimralev27@itpg-varna.bg](mailto:maksimralev27@itpg-varna.bg).
