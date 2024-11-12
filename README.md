@@ -84,7 +84,7 @@ ZipURL is a high-performance, scalable URL shortener built with Java Spring Boot
    - wait for the build to finish (it takes a while) and you are done with the backend setup
    -
 > [!TIP]
-> While waiting start the client (frontend)
+> While waiting for the docker to start set up the client (frontend)
 
 
 3. **Frontend Setup**:
