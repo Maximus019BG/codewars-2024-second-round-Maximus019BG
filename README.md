@@ -1,6 +1,6 @@
 # 🌟 ZipURL
 
-ZipURL is a high-performance, scalable URL shortener built with Java Spring Boot for the backend and Next.js for the frontend. With ZipURL, you can effortlessly generate short links, track clicks, and manage URLs.
+ZipURL is a high-performance, scalable URL shortener built with Java Spring Boot for the backend and Next.js for the frontend. With ZipURL, you can effortlessly generate short links, track clicks, manage URLs and more.
 
 ## 📜 Features
 
