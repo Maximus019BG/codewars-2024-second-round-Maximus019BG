@@ -26,6 +26,7 @@ const RegisterForm = () => {
             window.location.href = '/links';
         }).catch((error) => {
             console.log(error);
+            alert('Invalid email or already registered with this email');
         })
     };
     useEffect(() => {

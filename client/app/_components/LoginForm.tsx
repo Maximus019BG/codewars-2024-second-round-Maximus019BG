@@ -21,7 +21,7 @@ const LogInFor = () => {
             window.location.href = '/links';
             console.log('Login successful');
         }).catch((error) => {
-            alert(error.response.data.message);
+            alert(error.response.data);
         });
     };
 

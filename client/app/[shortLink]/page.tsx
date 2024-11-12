@@ -26,9 +26,10 @@ const ShortLinkPage = () => {
                 } else {
                     setRequiresPassword(true); // Set the password requirement
                 }
-            } catch (error) {
+            } catch (error: unknown) {
                 console.error(error);
-                window.location.href = '/'; // Redirect to the home page if the short link is invalid
+                window.location.href = "/not/found";
+                //why does notFound() not work?
             }
         };
         checkPasswordRequirement();
@@ -46,7 +47,7 @@ const ShortLinkPage = () => {
             setRedirectUrl(response.data); // Set the redirect URL
         } catch (error) {
             console.error(error);
-            alert("Invalid password");
+            alert("Invalid password or link is expired");
         }
     };
 
@@ -71,7 +72,7 @@ const ShortLinkPage = () => {
                             className="p-2 border-none rounded rounded-b-md text-black"
                             required
                         />
-                        <button type="submit" className=" ml-5 button p-2 bg-blue-500 text-white rounded hover:bg-blue-700">
+                        <button type="submit" className=" ml-5 button p-2 bg-yellow text-black rounded hover:bg-amber-500">
                             Submit
                         </button>
                     </form>

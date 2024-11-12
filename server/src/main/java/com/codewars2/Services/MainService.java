@@ -34,10 +34,9 @@ public class MainService {
         String uuid = java.util.UUID.randomUUID().toString();
         uuid = uuid.replaceAll("-", "");
         String shortUrl;
-        if(longUrl.length() < 10) {
+        if (longUrl.length() < 10) {
             shortUrl = uuid.substring(0, 11);
-        }
-        else {
+        } else {
             shortUrl = longUrl.substring(8, 10) + uuid.substring(0, 9);
         }
         // Check if short url already exists
@@ -54,7 +53,7 @@ public class MainService {
             shortUrl = generateShortUrl(longUrl);
         } while (shortUrlExists(shortUrl));
         
-        if(length == 0) {
+        if (length == 0) {
             return shortUrl.substring(0, 6);
         }
         return shortUrl.substring(0, length);
@@ -73,10 +72,9 @@ public class MainService {
         } else {
             throw new RuntimeException("URL not found");
         }
-        if(checkClicks(shortUrl)){
-             return url.getLongUrl();
-        }
-        else{
+        if (checkClicks(shortUrl)) {
+            return url.getLongUrl();
+        } else {
             urlRepo.delete(url);
             throw new RuntimeException("URL has reached max clicks");
         }
@@ -98,10 +96,9 @@ public class MainService {
             url.setPassword(password);
         }
         
-        if(maxClicks > 0 ) {
+        if (maxClicks > 0) {
             url.setMaxClicks(maxClicks);
-        }
-        else{
+        } else {
             url.setMaxClicks(-1);
         }
         
@@ -157,10 +154,9 @@ public class MainService {
         }
         
         //Update Max Clicks
-        if(maxClicks > 0 ) {
+        if (maxClicks > 0) {
             url.setMaxClicks(maxClicks);
-        }
-        else{
+        } else {
             url.setMaxClicks(-1);
         }
         
@@ -180,8 +176,7 @@ public class MainService {
                 url.setExpirationDate(LocalDate.parse(expirationDate));
                 url.setExpired(false); //Expire the URL
             }
-        }
-        else{
+        } else {
             url.setExpirationDate(null);
         }
         
@@ -204,7 +199,7 @@ public class MainService {
         if (url == null) {
             throw new RuntimeException("URL not found");
         }
-       return BCrypt.checkpw(password, url.getPassword());
+        return BCrypt.checkpw(password, url.getPassword());
     }
     
     //Check if there is a password for a URL!!!!
@@ -212,8 +207,7 @@ public class MainService {
         Url url = urlRepo.findByShortUrl(shortUrl).orElse(null);
         if (url == null) {
             throw new RuntimeException("URL not found");
-        }
-        else if(!checkClicks(shortUrl)){
+        } else if (!checkClicks(shortUrl)) {
             urlRepo.delete(url);    //Delete URL if max clicks reached
             return false;
         }
@@ -230,10 +224,10 @@ public class MainService {
     private boolean isExpired(Url url) {
         if (url.getExpirationDate() == null) {
             return false;
-        } else if (url.getExpirationDate() != null && url.getExpirationDate().isBefore(LocalDate.now().plusDays(1))) {
-            url.setExpired(true);//Set URL to expired
+        } else if (url.getExpirationDate().isBefore(LocalDate.now())) {
+            url.setExpired(true); // Set URL to expired
             urlRepo.save(url);
-            return false;
+            return true;
         }
         return url.isExpired();
     }
@@ -260,7 +254,7 @@ public class MainService {
         Url url = urlRepo.findByShortUrl(shortUrl).orElse(null);
         assert url != null; //Check if URL is null
         //if no max clicks return true
-        if(url.getMaxClicks() < 0 ) {
+        if (url.getMaxClicks() < 0) {
             return true;
         }
         //Get bought clicks

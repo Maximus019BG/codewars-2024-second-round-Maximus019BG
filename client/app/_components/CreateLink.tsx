@@ -26,7 +26,7 @@ const CreateLink = () => {
     // Date conversion
     const formatExpirationDate = (date: Date | null) => {
         if (!date) return null;
-        return date ? date.toISOString().split("T")[0] : ""; // Format the date to MM/dd/YYYY
+        return date ? date.toISOString().split("T")[0] : ""; // Format the date to MM/dd/YYYY (remove seconds ...)
     };
 
     // Create a new link
@@ -60,14 +60,13 @@ const CreateLink = () => {
             setPopupMessage(response.data);
             console.log(response.data);
         }).catch((error) => {
-            setPopup(true);
-            setPopupMessage(error.response.data);
+            alert("Already existing custom short URL");
             console.log(error);
         });
     };
 
     return (
-        <div className="mx-auto p-4 w-1/2">
+        <div className="mx-auto mt-5 p-4 w-1/2 border-yellow border-2 rounded">
             <div className="input-group flex items-center mb-4">
                 <span className="prefix text-gray-500 bg-darkGray p-2 border border-gray-300 rounded-l">{baseUrl}</span>
                 <input
@@ -101,12 +100,12 @@ const CreateLink = () => {
                     className="input w-full p-3 pl-4 pr-12 border border-gray-300 rounded text-white bg-darkGray focus:outline-none focus:ring-2 focus:ring-yellow transition-all"
                     selected={expiration}
                     onChange={(date: Date | null) => setExpiration(date)}
-                    placeholderText="YYYY/MM/DD"
+                    placeholderText="YYYY/MM/DD     *optional"
                     dateFormat="yyyy/MM/dd" // Display format
                 />
             </div>
             <div className="input-group flex items-center mb-4">
-                <label className="text-gray-500 mr-2">Length: {length}</label>
+                <label className="text-gray-500 w-1/3">Length (generated only): {length}</label>
                 <input
                     className="w-full"
                     value={length}
@@ -114,17 +113,20 @@ const CreateLink = () => {
                     type="range"
                     min="5"
                     max="10"
-                    style={{accentColor: "yellow"}}
+                    style={{accentColor: "#ffc600"}}
                 />
             </div>
             <div className="input-group flex items-center mb-4">
-                <input
-                    className="input w-full p-2 border border-gray-300 rounded text-white bg-darkGray"
-                    value={maxClicks || ""}
-                    onChange={(e) => setMaxClicks(Number(e.target.value))}
-                    type="number"
-                    placeholder="Max clicks *optional"
-                />
+                <div className="w-full">
+                    <input
+                        className="input w-full p-2 border border-gray-300 rounded text-white bg-darkGray"
+                        value={maxClicks || ""}
+                        onChange={(e) => setMaxClicks(Number(e.target.value))}
+                        type="number"
+                        placeholder="Max clicks *optional"
+                    />
+                    <p className="text-gray-500">the link will be <strong>deleted</strong> after the max clicks are reached</p>
+                </div>
             </div>
             <button
                 className="button w-full p-2 bg-yellow text-black rounded hover:bg-yellow-600"
@@ -144,13 +146,11 @@ const CreateLink = () => {
                         >
                             &times;
                         </button>
-                        {popupMessage.includes("error") ? (
-                            <h3 className="text-red-500">{popupMessage}</h3>
-                        ) : (
+                        {popupMessage && (
                             <div className="px-3 py-2">
                                 <p>Your short link is: {baseUrl}{popupMessage}</p>
                                 <button
-                                    className="button w-full p-2 bg-yellow text-white rounded hover:bg-yellow-600 mt-2"
+                                    className="button w-full p-2 bg-yellow text-black rounded hover:bg-yellow-600 mt-2"
                                     onClick={() => navigator.clipboard.writeText(baseUrl + popupMessage)}
                                 >
                                     Copy

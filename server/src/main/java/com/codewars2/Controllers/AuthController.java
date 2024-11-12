@@ -44,7 +44,7 @@ public class AuthController {
             
             Map<String,String> tokens = authService.login(email, password); // Login the user
             if(tokens == null) {
-                return ResponseEntity.status(401).body("Unauthorized"); // Return 401
+                return ResponseEntity.status(401).body("Unauthorized: Wrong email and password combination"); // Return 401
             }
             
             return ResponseEntity.ok().body(tokens); // Return 200

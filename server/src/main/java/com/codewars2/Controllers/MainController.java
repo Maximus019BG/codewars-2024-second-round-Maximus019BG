@@ -43,7 +43,6 @@ public class MainController {
     //Get long URL
     @GetMapping("/get/{shortUrl}")
     public ResponseEntity<String> getLongUrl(@PathVariable String shortUrl, @RequestHeader(required = false) String password) {
-        System.out.println("Accessing URL: " + shortUrl);
         Url url = urlRepo.findByShortUrl(shortUrl).orElse(null);
         
         // Check for password
@@ -79,6 +78,9 @@ public class MainController {
     //Check if url has password
     @GetMapping("/check/password")
     public ResponseEntity<Boolean> checkPassword(@RequestHeader("shortUrl") String shortUrl) {
+        if(shortUrl == null || shortUrl.isEmpty() || shortUrl.isBlank() || shortUrl.equals("")) {
+            return ResponseEntity.status(400).body(false);    //Return 400
+        }
         return ResponseEntity.ok().body(mainService.checkPasswordForPassword(shortUrl));    //Return 200
     }
     

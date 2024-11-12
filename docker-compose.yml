@@ -10,7 +10,6 @@ services:
       - app-network
     volumes:
       - db-data:/var/lib/mysql
-      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
     restart: always
 
   codewarsapp:

@@ -7,6 +7,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import java.util.List;
 
 import static com.codewars2.Utils.Utils.generateId;
+import static com.codewars2.Utils.Utils.isValidEmail;
 
 @Entity
 @Table(name = "users")
@@ -46,6 +47,9 @@ public class User {
     }
     
     public void setEmail(String email) {
+        if(!isValidEmail(email)){
+            throw new IllegalArgumentException("Invalid email");
+        }
         this.email = email;
     }
     

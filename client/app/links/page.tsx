@@ -4,16 +4,13 @@ import CreateLink from "@/app/_components/CreateLink";
 import AllUrls from "@/app/_components/AllUrls";
 
 const LinksPage = () => {
-    //Session check inside sidebar to have
-    //Server component
-
     return (
-        <div className="flex w-full h-full">
-            <div className="">
+        <div className="flex w-full min-h-screen">
+            <div>
                 <NavBar/>
             </div>
             <div className="w-full h-full mt-14">
-                <div className="w-full flex-1">
+                <div className="w-full flex-1 flex items-center justify-center">
                     <CreateLink/>
                 </div>
                 <div>

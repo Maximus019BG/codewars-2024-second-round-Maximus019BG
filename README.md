@@ -1,17 +1,22 @@
-# 🚀 ZipURL
+# 🌟 ZipURL
 
 ZipURL is a high-performance, scalable URL shortener built with Java Spring Boot for the backend and Next.js for the frontend. With ZipURL, you can effortlessly generate short links, track clicks, and manage URLs.
 
 ## 📜 Features
 
 - **Instant URL Shortening**: Convert long URLs into concise, manageable links.
+- **Custom length**: Choose the length of the short link (for auto generated only).
 - **Custom Aliases**: Create personalized short links.
 - **Analytics Dashboard**: Monitor clicks and other metrics.
+- **Password Protection**: Secure short links with passwords.
 - **Expiration Dates**: Set expiration dates for temporary links.
+- **Click Limits**: Set the number of clicks after which the link will expire.
+- **Edit and Delete Links**: Modify or remove short links as needed.
+- **QR Codes**: Generate QR codes for short links.
 
 ## 🛠️ Tech Stack
 
-### 🤝 Frontend
+### 🌐 Frontend
 - **Next.js**: A React framework for server-side rendering and generating static websites.
 - **Tailwind CSS**: A utility-first CSS framework for rapid UI development.
 - **Axios**: A promise-based HTTP client for making API requests.
@@ -22,14 +27,15 @@ ZipURL is a high-performance, scalable URL shortener built with Java Spring Boot
 - **Java Spring Boot**: A framework for building production-ready applications in Java.
 - **Maven**: A build automation tool for Java projects.
 - **Lombok**: A library to reduce boilerplate code in Java.
-- **JWT**: A standard for creating access tokens.
+- **JWT**: A standard for creating tokens.
 - **Java-dotenv**: A Java library for reading environment variables.
 - **Spring Data JPA**: A data access framework for Java applications.
+- **Commons-Validator**: A library for validating Emails.
 
 ### 📊 Database
 - **MySQL**: A reliable, high-performance relational database management system.
 
-### ➕ Others
+### ➕ DevOps
 - **Docker**: A platform for developing, shipping, and running applications in containers.
 
 ## 🚀 Getting Started
@@ -55,9 +61,17 @@ ZipURL is a high-performance, scalable URL shortener built with Java Spring Boot
    #Change with your secret
    JWT_SECRET=secret
    ```
-***Note:*** *Ports 3000 (client) and 8080 (server) and 3307 (database is usually on 3306 you should have any problem) need to be free (not used by other program)*
+***Note:*** *Ports 3000 (client) and `8080` (server) and `3307` (database is usually on 3306 you should have any problem) need to be free (not used by other program)*
 
 ***Note:*** *You need to have *docker* and *Node.js* installed on your machine*
+
+
+
+> [!IMPORTANT]
+> - ***Note:*** *You need to have *docker* and *Node.js* installed on your machine*
+> - ***Note:*** *Ports 3000 (client) and `8080` (server) and `3307` (database is usually on 3306 you should have any problem) need to be free (not used by other program)*
+> - *The .env files should contain the following variables (change with your credentials)*
+> - ***Note:*** *You need to create a .env file in the root directory of the project ( / )  **AND** in the server directory ( /server )*
 
 1. **Clone the repository**:
     ```sh
@@ -110,6 +124,7 @@ ZipURL is a high-performance, scalable URL shortener built with Java Spring Boot
     - You can also create a custom alias for the short link.
     - Set an expiration date for temporary links.
     - Set the number of clicks after which the link will expire.
+    - And Other
 
 
 3. **Monitor Link Performance**:
@@ -120,13 +135,14 @@ ZipURL is a high-performance, scalable URL shortener built with Java Spring Boot
       - View the number of clicks
       - Edit the link
          - Change the expiration date
+         - Change the password
          - Change the number of clicks after which the link will expire
          - Change the alias
       - Delete the link
    
 
-## 🤝 Contributing
-We DO NOT accept contributions at this time.
+## 🤝❌ Contributing
+We **DO NOT** accept contributions at this time.
 Its olympiad project after all.
 
 ## 📧 Contact
