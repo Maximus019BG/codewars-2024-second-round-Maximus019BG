@@ -53,7 +53,7 @@ ZipURL is a high-performance, scalable URL shortener built with Java Spring Boot
 > - *Ports 3000 (client) and `8080` (server) and `3307` (database) need to be free (not used by other program)*
 >
    ```dotenv
-   #The port needs to be 3306
+   #The port needs to be 3306 for the docker-compose to work
    #Change <database_name> with your database name  (should be the same as the one in DB_NAME)
    DB_URL=jdbc:mysql://codewarsdb:3306/<database_name>
    #Has to be root
